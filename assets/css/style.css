@@ -96,7 +96,7 @@ body.dark-mode .card:hover {
 }
 
 .bg-gradient {
-  background: linear-gradient(90deg, #ff416c, #ff4b2b);
+  background: linear-gradient(90deg, #030202, #ff4b2b);
 }
 
 h1, h2, h3, h4, h5, h6, p, span, div, a, li, .lead, .card-title, .card-body {
