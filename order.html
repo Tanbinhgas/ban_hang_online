@@ -3,23 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>About / Stats - GearHub</title>
+    <title>Đặt hàng - GearHub</title>
 
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
-      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-      crossorigin="anonymous"
     />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="assets/css/style.css" />
   </head>
   <body>
@@ -28,14 +25,12 @@
     >
       <div class="container">
         <a class="navbar-brand fw-bold fs-4" href="index.html">GearHub</a>
+
         <button
           class="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarContent"
-          aria-controls="navbarContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
         >
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -45,7 +40,7 @@
             <input
               class="form-control me-2 rounded-pill"
               type="search"
-              placeholder="Tìm gear... (Razer, Logitech, bàn phím cơ...)"
+              placeholder="Tìm gear..."
               aria-label="Search"
             />
             <button class="btn btn-outline-light rounded-pill" type="submit">
@@ -61,12 +56,10 @@
               <a class="nav-link" href="products.html">Catalog</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="about.html"
-                >About / Stats</a
-              >
+              <a class="nav-link active" href="order.html">Đặt hàng</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="order.html">Đặt hàng</a>
+              <a class="nav-link" href="about.html">About / Stats</a>
             </li>
           </ul>
 
@@ -139,156 +132,155 @@
       <div class="row">
         <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
           <div class="position-sticky pt-3" style="top: 70px">
-            <h5 class="p-3 border-bottom text-center fw-bold">Danh mục Gear</h5>
+            <h5 class="p-3 border-bottom text-center fw-bold">Module</h5>
             <ul class="list-group list-group-flush">
               <li class="list-group-item">
-                <a href="#" class="text-decoration-none text-dark">
-                  <i class="fas fa-mouse-pointer me-2 text-primary"></i> Chuột +
-                  Lót chuột
-                </a>
+                <a href="index.html" class="text-decoration-none">Home</a>
               </li>
               <li class="list-group-item">
-                <a href="#" class="text-decoration-none text-dark">
-                  <i class="fas fa-keyboard me-2 text-success"></i> Bàn phím
-                </a>
+                <a href="products.html" class="text-decoration-none"
+                  >Quản lý sản phẩm</a
+                >
+              </li>
+              <li class="list-group-item active">
+                <a href="order.html" class="text-decoration-none">Đặt hàng</a>
               </li>
               <li class="list-group-item">
-                <a href="#" class="text-decoration-none text-dark">
-                  <i class="fas fa-headphones me-2 text-danger"></i> Tai nghe
-                </a>
-              </li>
-              <li class="list-group-item">
-                <a href="#" class="text-decoration-none text-dark">
-                  <i class="fas fa-volume-up me-2 text-warning"></i> Loa + Mic
-                </a>
+                <a href="about.html" class="text-decoration-none"
+                  >About / Stats</a
+                >
               </li>
             </ul>
           </div>
         </nav>
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-          <div class="text-center mb-5">
-            <h1 class="fw-bold">About GearHub</h1>
-            <p class="lead text-muted">
-              Nền tảng quản lý và giới thiệu gear máy tính gaming/PC hàng đầu
-            </p>
+          <div
+            class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2"
+          >
+            <h2 class="mb-0">Đặt hàng mới</h2>
           </div>
 
-          <div class="row mb-5 align-items-center">
-            <div class="col-md-6">
-              <h3>Giới thiệu dự án</h3>
-              <p>
-                GearHub là website quản lý danh sách gear gaming (chuột, bàn
-                phím, tai nghe, loa + mic...), hỗ trợ đầy đủ CRUD, tìm kiếm,
-                lọc, sắp xếp và lưu trữ LocalStorage. Dự án được xây dựng bởi
-                nhóm 5 sinh viên Đại học CMC cho môn Cơ sở Lập trình Web.
-              </p>
-              <ul class="list-unstyled">
-                <li>
-                  <strong>Công nghệ:</strong> HTML5, CSS3, Bootstrap 5,
-                  JavaScript, Font Awesome, Chart.js
-                </li>
-                <li>
-                  <strong>Chức năng chính:</strong> Quản lý sản phẩm, Dark/Light
-                  mode, Responsive, Giỏ hàng, Đăng nhập/Đăng ký
-                </li>
-                <li>
-                  <strong>Mục tiêu:</strong> Đáp ứng yêu cầu bài tập lớn với
-                  điểm cao nhất có thể
-                </li>
-              </ul>
-            </div>
-            <div class="col-md-6 text-center">
-              <img
-                src="assets/img/GearHub_logo.png"
-                alt="GearHub Logo"
-                class="img-fluid rounded shadow"
-                onerror="
-                  this.src =
-                    'https://via.placeholder.com/400x300?text=GearHub+Logo'
-                "
-              />
-            </div>
-          </div>
-
-          <h3 class="text-center mb-4">Thống kê Gear Hiện tại</h3>
-          <div class="row g-4 mb-5 text-center">
-            <div class="col-md-3">
-              <div class="card shadow-sm">
+          <div class="row g-4">
+            <div class="col-lg-7">
+              <div class="card shadow-sm border-0">
                 <div class="card-body">
-                  <h5 class="card-title">Tổng Gear</h5>
-                  <h2 id="totalGears" class="text-primary">0</h2>
+                  <form id="orderForm">
+                    <div class="mb-3">
+                      <label for="productSelect" class="form-label"
+                        >Chọn sản phẩm <span class="text-danger">*</span></label
+                      >
+                      <select id="productSelect" class="form-select" required>
+                        <option value="">-- Chọn sản phẩm --</option>
+                      </select>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="orderQuantity" class="form-label"
+                        >Số lượng đặt <span class="text-danger">*</span></label
+                      >
+                      <input
+                        type="number"
+                        id="orderQuantity"
+                        class="form-control"
+                        min="1"
+                        value="1"
+                        required
+                      />
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="customerName" class="form-label"
+                        >Tên khách hàng
+                        <span class="text-danger">*</span></label
+                      >
+                      <input
+                        type="text"
+                        id="customerName"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="customerPhone" class="form-label"
+                        >Số điện thoại <span class="text-danger">*</span></label
+                      >
+                      <input
+                        type="text"
+                        id="customerPhone"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="customerAddress" class="form-label"
+                        >Địa chỉ giao hàng
+                        <span class="text-danger">*</span></label
+                      >
+                      <textarea
+                        id="customerAddress"
+                        class="form-control"
+                        rows="3"
+                        required
+                      ></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="shippingMethod" class="form-label"
+                        >Phương thức vận chuyển</label
+                      >
+                      <select id="shippingMethod" class="form-select">
+                        <option value="Giao nhanh">
+                          Giao nhanh (2-3 ngày)
+                        </option>
+                        <option value="Giao tiết kiệm">
+                          Giao tiết kiệm (5-7 ngày)
+                        </option>
+                      </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                      <i class="fas fa-receipt me-1"></i> Xác nhận đặt hàng
+                    </button>
+                  </form>
                 </div>
               </div>
             </div>
-            <div class="col-md-3">
-              <div class="card shadow-sm">
+
+            <div class="col-lg-5">
+              <div class="card shadow-sm border-0 mb-4">
                 <div class="card-body">
-                  <h5 class="card-title">Còn hàng</h5>
-                  <h2 id="inStock" class="text-success">0</h2>
-                  <small id="percentInStock" class="text-success">(XX%)</small>
+                  <h5 class="card-title mb-3">Thông tin sản phẩm</h5>
+                  <p class="mb-2">
+                    <strong>Tên:</strong> <span id="infoTitle">Chưa chọn</span>
+                  </p>
+                  <p class="mb-2">
+                    <strong>Loại:</strong> <span id="infoCategory">-</span>
+                  </p>
+                  <p class="mb-2">
+                    <strong>Giá:</strong> <span id="infoPrice">-</span>
+                  </p>
+                  <p class="mb-2">
+                    <strong>Tồn kho:</strong> <span id="infoStock">-</span>
+                  </p>
+                  <p class="mb-0">
+                    <strong>Trạng thái:</strong> <span id="infoStatus">-</span>
+                  </p>
                 </div>
               </div>
-            </div>
-            <div class="col-md-3">
-              <div class="card shadow-sm">
+
+              <div class="card shadow-sm border-0">
                 <div class="card-body">
-                  <h5 class="card-title">Hết hàng</h5>
-                  <h2 id="outOfStock" class="text-danger">0</h2>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="card shadow-sm">
-                <div class="card-body">
-                  <h5 class="card-title">Category Hot</h5>
-                  <h2 id="topCategory" class="text-warning">Chuột</h2>
+                  <h5 class="card-title mb-3">Đơn hàng gần nhất</h5>
+                  <div id="latestOrder">
+                    <p class="text-muted mb-0">Chưa có đơn hàng nào.</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-
-          <div class="card shadow-sm mb-5">
-            <div class="card-body">
-              <h5 class="card-title text-center">Phân bố theo Category</h5>
-              <div style="height: 300px">
-                <canvas id="categoryChart"></canvas>
-              </div>
-            </div>
-          </div>
-
-          <h3 class="text-center mb-4">Liên hệ với chúng tôi</h3>
-          <form class="row g-3 justify-content-center" id="contactForm">
-            <div class="col-md-5">
-              <input
-                type="text"
-                class="form-control"
-                placeholder="Tên của bạn"
-                required
-              />
-            </div>
-            <div class="col-md-5">
-              <input
-                type="email"
-                class="form-control"
-                placeholder="Email"
-                required
-              />
-            </div>
-            <div class="col-10">
-              <textarea
-                class="form-control"
-                rows="5"
-                placeholder="Tin nhắn của bạn..."
-                required
-              ></textarea>
-            </div>
-            <div class="col-10 text-center">
-              <button type="submit" class="btn btn-primary btn-lg px-5">
-                Gửi tin nhắn
-              </button>
-            </div>
-          </form>
         </main>
       </div>
     </div>
@@ -479,76 +471,148 @@
       </div>
     </div>
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
       const gears = JSON.parse(localStorage.getItem("gears")) || [];
+      let orders = JSON.parse(localStorage.getItem("orders")) || [];
 
-      const total = gears.length;
-      const inStockCount = gears.filter((g) => g.quantity > 0).length;
-      const outOfStockCount = total - inStockCount;
-      const percent = total > 0 ? Math.round((inStockCount / total) * 100) : 0;
+      const productSelect = document.getElementById("productSelect");
+      const orderForm = document.getElementById("orderForm");
 
-      document.getElementById("totalGears").textContent = total;
-      document.getElementById("inStock").textContent = inStockCount;
-      document.getElementById("outOfStock").textContent = outOfStockCount;
-      document.getElementById("percentInStock").textContent = `(${percent}%)`;
+      const infoTitle = document.getElementById("infoTitle");
+      const infoCategory = document.getElementById("infoCategory");
+      const infoPrice = document.getElementById("infoPrice");
+      const infoStock = document.getElementById("infoStock");
+      const infoStatus = document.getElementById("infoStatus");
+      const latestOrder = document.getElementById("latestOrder");
 
-      const categoryCount = {
-        Chuột: gears.filter((g) => g.category === "Chuột").length,
-        "Bàn phím": gears.filter((g) => g.category === "Bàn phím").length,
-        "Tai nghe": gears.filter((g) => g.category === "Tai nghe").length,
-        "Loa/Mic": gears.filter((g) => g.category === "Loa/Mic").length,
-      };
+      function loadProductsToSelect() {
+        productSelect.innerHTML =
+          '<option value="">-- Chọn sản phẩm --</option>';
 
-      const topCat = Object.entries(categoryCount).sort(
-        (a, b) => b[1] - a[1],
-      )[0];
-      if (topCat && topCat[1] > 0) {
-        document.getElementById("topCategory").textContent = topCat[0];
+        if (!gears.length) return;
+
+        gears.forEach((gear) => {
+          const option = document.createElement("option");
+          option.value = gear.id;
+          option.textContent = `${gear.title} - ${Number(gear.price).toLocaleString("vi-VN")}đ (còn ${gear.quantity})`;
+          productSelect.appendChild(option);
+        });
       }
 
-      const ctx = document.getElementById("categoryChart").getContext("2d");
-      new Chart(ctx, {
-        type: "pie",
-        data: {
-          labels: ["Chuột + Lót", "Bàn phím", "Tai nghe", "Loa + Mic"],
-          datasets: [
-            {
-              data: [
-                categoryCount["Chuột"],
-                categoryCount["Bàn phím"],
-                categoryCount["Tai nghe"],
-                categoryCount["Loa/Mic"],
-              ],
-              backgroundColor: ["#0d6efd", "#198754", "#dc3545", "#ffc107"],
-              borderWidth: 1,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: "bottom",
-              labels: { font: { family: "Poppins", size: 14 } },
-            },
-          },
-        },
-      });
+      function getSelectedProduct() {
+        const selectedId = productSelect.value;
+        return gears.find((g) => g.id === selectedId);
+      }
 
-      document
-        .getElementById("contactForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
-          alert("Cảm ơn phản hồi của bạn! Chúng tôi sẽ liên hệ sớm.");
-          this.reset();
-        });
+      function renderProductInfo() {
+        const product = getSelectedProduct();
+
+        if (!product) {
+          infoTitle.textContent = "Chưa chọn";
+          infoCategory.textContent = "-";
+          infoPrice.textContent = "-";
+          infoStock.textContent = "-";
+          infoStatus.textContent = "-";
+          return;
+        }
+
+        infoTitle.textContent = product.title;
+        infoCategory.textContent = product.category;
+        infoPrice.textContent =
+          Number(product.price).toLocaleString("vi-VN") + "₫";
+        infoStock.textContent = product.quantity;
+        infoStatus.textContent =
+          Number(product.quantity) > 0 ? "Còn hàng" : "Hết hàng";
+      }
+
+      function renderLatestOrder() {
+        if (!orders.length) {
+          latestOrder.innerHTML =
+            '<p class="text-muted mb-0">Chưa có đơn hàng nào.</p>';
+          return;
+        }
+
+        const last = orders[orders.length - 1];
+        latestOrder.innerHTML = `
+        <p class="mb-2"><strong>Mã đơn:</strong> ${last.id}</p>
+        <p class="mb-2"><strong>Sản phẩm:</strong> ${last.productName}</p>
+        <p class="mb-2"><strong>Số lượng:</strong> ${last.quantity}</p>
+        <p class="mb-2"><strong>Khách hàng:</strong> ${last.customerName}</p>
+        <p class="mb-2"><strong>Địa chỉ:</strong> ${last.address}</p>
+        <p class="mb-0"><strong>Trạng thái:</strong> ${last.status}</p>
+      `;
+      }
+
+      productSelect.addEventListener("change", renderProductInfo);
+
+      orderForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const product = getSelectedProduct();
+        const qty = Number(document.getElementById("orderQuantity").value);
+        const customerName = document
+          .getElementById("customerName")
+          .value.trim();
+        const customerPhone = document
+          .getElementById("customerPhone")
+          .value.trim();
+        const customerAddress = document
+          .getElementById("customerAddress")
+          .value.trim();
+        const shippingMethod = document.getElementById("shippingMethod").value;
+
+        if (!product) {
+          alert("Vui lòng chọn sản phẩm.");
+          return;
+        }
+
+        if (qty <= 0) {
+          alert("Số lượng đặt phải lớn hơn 0.");
+          return;
+        }
+
+        if (product.quantity < qty) {
+          alert(
+            `Sản phẩm không đủ hàng. Chỉ còn ${product.quantity} sản phẩm.`,
+          );
+          return;
+        }
+
+        if (!customerName || !customerPhone || !customerAddress) {
+          alert("Vui lòng nhập đầy đủ thông tin đơn hàng.");
+          return;
+        }
+
+        product.quantity -= qty;
+        localStorage.setItem("gears", JSON.stringify(gears));
+
+        const order = {
+          id: "DH" + Date.now(),
+          productId: product.id,
+          productName: product.title,
+          quantity: qty,
+          totalPrice: product.price * qty,
+          customerName,
+          phone: customerPhone,
+          address: customerAddress,
+          shippingMethod,
+          status: "Đang xử lý",
+          createdAt: new Date().toLocaleString("vi-VN"),
+        };
+
+        orders.push(order);
+        localStorage.setItem("orders", JSON.stringify(orders));
+
+        alert(
+          `Đặt hàng thành công!\nMã đơn: ${order.id}\nTổng tiền: ${order.totalPrice.toLocaleString("vi-VN")}đ`,
+        );
+        orderForm.reset();
+        renderProductInfo();
+        renderLatestOrder();
+        loadProductsToSelect();
+      });
 
       function updateCartCount() {
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -558,6 +622,10 @@
           cartCount.textContent = totalItems;
         }
       }
+
+      loadProductsToSelect();
+      renderProductInfo();
+      renderLatestOrder();
       updateCartCount();
 
       document.getElementById("cartBtn")?.addEventListener("click", (e) => {
@@ -576,6 +644,7 @@
         }
       });
     </script>
+
     <script src="assets/js/app.js"></script>
     <script src="assets/js/auth.js"></script>
   </body>
