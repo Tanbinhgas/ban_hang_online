@@ -7,6 +7,7 @@ function isLoggedIn() {
   return currentUser !== null;
 }
 
+<<<<<<< HEAD:assets/js/auth.js
 // Hàm kiểm tra Admin
 function isAdmin() {
   return currentUser !== null && currentUser.role === "admin";
@@ -19,6 +20,10 @@ function isUser() {
 
 // Hàm đăng ký
 function register(email, password, fullname, role) {
+=======
+// Hàm đăng ký
+function register(email, password, fullname) {
+>>>>>>> dd4619ba652d82732ed9ddb919fb55d4db7aed3a:src/assets/js/auth.js
   // Kiểm tra email đã tồn tại chưa
   const existingUser = users.find((u) => u.email === email);
   if (existingUser) {
@@ -36,7 +41,10 @@ function register(email, password, fullname, role) {
     email: email,
     password: password,
     fullname: fullname || email.split("@")[0],
+<<<<<<< HEAD:assets/js/auth.js
     role: role, // "admin" hoặc "user"
+=======
+>>>>>>> dd4619ba652d82732ed9ddb919fb55d4db7aed3a:src/assets/js/auth.js
     createdAt: new Date().toLocaleString("vi-VN"),
   };
 
@@ -58,15 +66,22 @@ function login(email, password) {
     id: user.id,
     email: user.email,
     fullname: user.fullname,
+<<<<<<< HEAD:assets/js/auth.js
     role: user.role,
+=======
+>>>>>>> dd4619ba652d82732ed9ddb919fb55d4db7aed3a:src/assets/js/auth.js
   };
 
   localStorage.setItem("currentUser", JSON.stringify(currentUser));
 
+<<<<<<< HEAD:assets/js/auth.js
   return {
     success: true,
     message: `Chào mừng ${currentUser.fullname} (${currentUser.role === "admin" ? "Quản trị viên" : "Khách hàng"})!`,
   };
+=======
+  return { success: true, message: `Chào mừng ${currentUser.fullname}!` };
+>>>>>>> dd4619ba652d82732ed9ddb919fb55d4db7aed3a:src/assets/js/auth.js
 }
 
 // Hàm đăng xuất
@@ -139,8 +154,11 @@ function handleRegister(e) {
   const email = document.getElementById("regEmail").value.trim();
   const password = document.getElementById("regPassword").value;
   const confirmPassword = document.getElementById("regConfirmPassword").value;
+<<<<<<< HEAD:assets/js/auth.js
   const role =
     document.querySelector('input[name="role"]:checked')?.value || "user";
+=======
+>>>>>>> dd4619ba652d82732ed9ddb919fb55d4db7aed3a:src/assets/js/auth.js
 
   if (!fullname || !email || !password) {
     showMessage("Lỗi", "Vui lòng nhập đầy đủ thông tin!", true);
@@ -152,7 +170,11 @@ function handleRegister(e) {
     return;
   }
 
+<<<<<<< HEAD:assets/js/auth.js
   const result = register(email, password, fullname, role);
+=======
+  const result = register(email, password, fullname);
+>>>>>>> dd4619ba652d82732ed9ddb919fb55d4db7aed3a:src/assets/js/auth.js
 
   if (result.success) {
     showMessage("Thành công", result.message);
@@ -188,10 +210,13 @@ function handleLogin(e) {
     loginModal.hide();
     document.getElementById("loginForm").reset();
     updateAuthUI();
+<<<<<<< HEAD:assets/js/auth.js
     // Reload lại trang products nếu đang ở đó để cập nhật nút CRUD
     if (window.location.pathname.includes("products.html")) {
       location.reload();
     }
+=======
+>>>>>>> dd4619ba652d82732ed9ddb919fb55d4db7aed3a:src/assets/js/auth.js
   } else {
     showMessage("Lỗi", result.message, true);
   }
@@ -202,9 +227,12 @@ function handleLogout() {
   const result = logout();
   showMessage("Thành công", result.message);
   updateAuthUI();
+<<<<<<< HEAD:assets/js/auth.js
   if (window.location.pathname.includes("products.html")) {
     location.reload();
   }
+=======
+>>>>>>> dd4619ba652d82732ed9ddb919fb55d4db7aed3a:src/assets/js/auth.js
 }
 
 // Khởi tạo event listeners
@@ -243,6 +271,9 @@ window.showLoginModal = showLoginModal;
 window.showRegisterModal = showRegisterModal;
 window.handleLogout = handleLogout;
 window.isLoggedIn = isLoggedIn;
+<<<<<<< HEAD:assets/js/auth.js
 window.isAdmin = isAdmin;
 window.isUser = isUser;
+=======
+>>>>>>> dd4619ba652d82732ed9ddb919fb55d4db7aed3a:src/assets/js/auth.js
 window.getCurrentUser = () => currentUser;
