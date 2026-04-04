@@ -4,7 +4,7 @@ Lê Xuân Tân(leader),
 Đỗ Hoài Nam,
 Bùi Trần Tiến Thành,
 Đào Xuân Thành,
-Mai Văn Việt,
+Mai Văn Việt.
 
 Nội dung bài tập nhóm:
 

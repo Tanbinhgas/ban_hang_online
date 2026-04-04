@@ -23,8 +23,11 @@ body.dark-mode {
 body {
   background-color: var(--bg-color);
   color: var(--text-color);
-  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family:
+    "Poppins", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif !important;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 a {
@@ -41,7 +44,8 @@ a:hover {
   transition: background-color 0.3s ease;
 }
 
-.sidebar, .bg-light {
+.sidebar,
+.bg-light {
   background-color: var(--sidebar-bg) !important;
   color: var(--text-color);
   transition: background-color 0.3s ease;
@@ -49,11 +53,11 @@ a:hover {
 
 .list-group-item {
   background-color: transparent;
-  border-color: rgba(0,0,0,0.125);
+  border-color: rgba(0, 0, 0, 0.125);
 }
 
 body.dark-mode .list-group-item {
-  border-color: rgba(255,255,255,0.125);
+  border-color: rgba(255, 255, 255, 0.125);
 }
 
 .list-group-item a {
@@ -61,27 +65,29 @@ body.dark-mode .list-group-item {
 }
 
 .list-group-item:hover {
-  background-color: rgba(0,0,0,0.05);
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 body.dark-mode .list-group-item:hover {
-  background-color: rgba(255,255,255,0.05);
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 .card {
   background-color: var(--card-bg);
   border: none;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .card:hover {
   transform: translateY(-8px) scale(1.03);
-  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
 }
 
 body.dark-mode .card:hover {
-  box-shadow: 0 12px 24px rgba(255,255,255,0.08);
+  box-shadow: 0 12px 24px rgba(255, 255, 255, 0.08);
 }
 
 .text-muted {
@@ -90,17 +96,30 @@ body.dark-mode .card:hover {
 
 .carousel-caption {
   bottom: 20%;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   border-radius: 10px;
   padding: 1rem;
 }
 
 .bg-gradient {
-  background: linear-gradient(90deg, #ff416c, #ff4b2b);
+  background: linear-gradient(90deg, #030202, #ff4b2b);
 }
 
-h1, h2, h3, h4, h5, h6, p, span, div, a, li, .lead, .card-title, .card-body {
-  font-family: 'Poppins', sans-serif !important;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+div,
+a,
+li,
+.lead,
+.card-title,
+.card-body {
+  font-family: "Poppins", sans-serif !important;
 }
 
 .lead {
@@ -117,7 +136,26 @@ h1, h2, h3, h4, h5, h6, p, span, div, a, li, .lead, .card-title, .card-body {
 }
 
 @media (max-width: 768px) {
-  .navbar-brand { font-size: 1.4rem; }
-  .carousel-caption h3 { font-size: 1.4rem; }
-  .carousel-caption p { font-size: 0.9rem; }
+  .navbar-brand {
+    font-size: 1.4rem;
+  }
+  .carousel-caption h3 {
+    font-size: 1.4rem;
+  }
+  .carousel-caption p {
+    font-size: 0.9rem;
+  }
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.container-fluid {
+  flex: 1;
 }

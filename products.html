@@ -1,392 +1,634 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Catalog - GearHub</title>
-  
-  <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="assets/css/style.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Catalog - GearHub</title>
 
-  <!-- Navbar chung -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top">
-    <div class="container">
-      <a class="navbar-brand fw-bold fs-4" href="index.html">GearHub</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      
-      <div class="collapse navbar-collapse" id="navbarContent">
-        <form class="d-flex mx-auto my-2 my-lg-0 w-50" id="searchForm">
-          <input class="form-control me-2 rounded-pill" type="search" id="searchInput" placeholder="Tìm gear... (tên, mô tả, thương hiệu...)" aria-label="Search">
-          <button class="btn btn-outline-light rounded-pill" type="submit"><i class="fas fa-search"></i></button>
-        </form>
-        
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link active" aria-current="page" href="products.html">Catalog</a></li>
-          <li class="nav-item"><a class="nav-link" href="about.html">About / Stats</a></li>
-        </ul>
-        
-        <ul class="navbar-nav ms-3">
-          <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-user me-1"></i>Tài khoản</a></li>
-          <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-shopping-cart me-1"></i>Giỏ hàng</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body>
+    <nav
+      class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top"
+    >
+      <div class="container">
+        <a class="navbar-brand fw-bold fs-4" href="index.html">GearHub</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarContent"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-  <!-- Main Content -->
-  <div class="container-fluid mt-5 pt-5">
-    <div class="row">
-      <!-- Sidebar -->
-      <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
-        <div class="position-sticky pt-3" style="top: 70px;">
-          <h5 class="p-3 border-bottom text-center fw-bold">Danh mục Gear</h5>
-          <ul class="list-group list-group-flush" id="categoryFilter">
-            <li class="list-group-item active" data-category="all"><a href="#" class="text-decoration-none">Tất cả</a></li>
-            <li class="list-group-item" data-category="mouse"><a href="#" class="text-decoration-none">Chuột + Lót chuột</a></li>
-            <li class="list-group-item" data-category="keyboard"><a href="#" class="text-decoration-none">Bàn phím</a></li>
-            <li class="list-group-item" data-category="headset"><a href="#" class="text-decoration-none">Tai nghe</a></li>
-            <li class="list-group-item" data-category="speaker"><a href="#" class="text-decoration-none">Loa + Mic</a></li>
+        <div class="collapse navbar-collapse" id="navbarContent">
+          <form class="d-flex mx-auto my-2 my-lg-0 w-50">
+            <input
+              class="form-control me-2 rounded-pill"
+              type="search"
+              placeholder="Tìm sản phẩm..."
+            />
+            <button class="btn btn-outline-light rounded-pill" type="submit">
+              <i class="fas fa-search"></i>
+            </button>
+          </form>
+
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="products.html">Catalog</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="about.html">About / Stats</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="order.html">Đặt hàng</a>
+            </li>
+          </ul>
+
+          <ul class="navbar-nav ms-3">
+            <li class="nav-item">
+              <a class="nav-link" href="#" id="cartBtn">
+                <i class="fas fa-shopping-cart me-1"></i>Giỏ hàng
+                <span class="badge bg-danger rounded-pill" id="cartCount"
+                  >0</span
+                >
+              </a>
+            </li>
+          </ul>
+
+          <ul class="navbar-nav ms-3" id="authButtons">
+            <li class="nav-item">
+              <a class="nav-link" href="#" id="loginBtn"
+                ><i class="fas fa-sign-in-alt me-1"></i>Đăng nhập</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" id="registerBtn"
+                ><i class="fas fa-user-plus me-1"></i>Đăng ký</a
+              >
+            </li>
+          </ul>
+
+          <ul class="navbar-nav ms-3 d-none" id="userInfo">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="userDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+              >
+                <i class="fas fa-user-circle me-1"></i
+                ><span id="userName">User</span>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                  <a class="dropdown-item" href="#" id="profileBtn"
+                    ><i class="fas fa-user me-2"></i>Hồ sơ</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="#" id="myOrdersBtn"
+                    ><i class="fas fa-shopping-bag me-2"></i>Đơn hàng của tôi</a
+                  >
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a class="dropdown-item text-danger" href="#" id="logoutBtn"
+                    ><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</a
+                  >
+                </li>
+              </ul>
+            </li>
           </ul>
         </div>
-      </nav>
+      </div>
+    </nav>
 
-      <!-- Nội dung chính -->
-      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-          <h2 class="mb-0">Danh sách Gear</h2>
-          <div>
-            <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#gearModal" id="addGearBtn">
-              <i class="fas fa-plus me-1"></i> Thêm Gear Mới
-            </button>
-            <button class="btn btn-outline-danger" id="clearAllBtn">
-              <i class="fas fa-trash me-1"></i> Xóa Tất Cả
-            </button>
+    <div class="container-fluid mt-5 pt-5">
+      <div class="row">
+        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+          <div class="position-sticky pt-3" style="top: 70px">
+            <h5 class="p-3 border-bottom text-center fw-bold">Danh mục Gear</h5>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <a
+                  href="#"
+                  class="text-decoration-none category-link"
+                  data-category="all"
+                  >Tất cả</a
+                >
+              </li>
+              <li class="list-group-item">
+                <a
+                  href="#"
+                  class="text-decoration-none category-link"
+                  data-category="Chuột"
+                  >Chuột + Lót chuột</a
+                >
+              </li>
+              <li class="list-group-item">
+                <a
+                  href="#"
+                  class="text-decoration-none category-link"
+                  data-category="Bàn phím"
+                  >Bàn phím</a
+                >
+              </li>
+              <li class="list-group-item">
+                <a
+                  href="#"
+                  class="text-decoration-none category-link"
+                  data-category="Tai nghe"
+                  >Tai nghe</a
+                >
+              </li>
+              <li class="list-group-item">
+                <a
+                  href="#"
+                  class="text-decoration-none category-link"
+                  data-category="Loa/Mic"
+                  >Loa + Mic</a
+                >
+              </li>
+            </ul>
           </div>
-        </div>
+        </nav>
 
-        <!-- Filter & Sort -->
-        <div class="row mb-4">
-          <div class="col-md-4">
-            <select class="form-select" id="statusFilter">
-              <option value="all">Trạng thái: Tất cả</option>
-              <option value="InStock">Còn hàng</option>
-              <option value="OutOfStock">Hết hàng</option>
-            </select>
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+          <div
+            class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2"
+          >
+            <h2 class="mb-0">Danh sách Gear</h2>
+            <div>
+              <button
+                class="btn btn-primary me-2 admin-only"
+                data-bs-toggle="modal"
+                data-bs-target="#gearModal"
+                id="addGearBtn"
+              >
+                <i class="fas fa-plus me-1"></i> Thêm sản phẩm
+              </button>
+              <button
+                class="btn btn-outline-danger admin-only"
+                id="clearAllBtn"
+              >
+                <i class="fas fa-trash me-1"></i> Xóa tất cả
+              </button>
+            </div>
           </div>
-          <div class="col-md-4">
-            <select class="form-select" id="priorityFilter">
-              <option value="all">Mức độ hot: Tất cả</option>
-              <option value="High">High</option>
-              <option value="Medium">Medium</option>
-              <option value="Low">Low</option>
-            </select>
-          </div>
-          <div class="col-md-4">
-            <select class="form-select" id="sortSelect">
-              <option value="newest">Sắp xếp: Mới nhất</option>
-              <option value="price-asc">Giá tăng dần</option>
-              <option value="price-desc">Giá giảm dần</option>
-              <option value="priority">Hot trước</option>
-            </select>
-          </div>
-        </div>
 
-        <!-- Danh sách gear -->
-        <div class="row g-4" id="gearList">
-          <!-- Cards sẽ được render bởi JS -->
-        </div>
+          <div class="row mb-4">
+            <div class="col-md-4 mb-3 mb-md-0">
+              <input
+                type="text"
+                class="form-control"
+                id="searchInputMain"
+                placeholder="Tìm theo tên sản phẩm..."
+              />
+            </div>
+            <div class="col-md-4 mb-3 mb-md-0">
+              <select class="form-select" id="categoryFilter">
+                <option value="all">Tất cả loại sản phẩm</option>
+                <option value="Chuột">Chuột</option>
+                <option value="Bàn phím">Bàn phím</option>
+                <option value="Tai nghe">Tai nghe</option>
+                <option value="Loa/Mic">Loa/Mic</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <select class="form-select" id="sortSelect">
+                <option value="newest">Sắp xếp: Mới nhất</option>
+                <option value="price-asc">Giá tăng dần</option>
+                <option value="price-desc">Giá giảm dần</option>
+              </select>
+            </div>
+          </div>
 
-        <!-- Không có kết quả -->
-        <div class="text-center my-5 d-none" id="noResults">
-          <h4>Không tìm thấy gear nào</h4>
-          <p>Thử thay đổi từ khóa hoặc bộ lọc</p>
-        </div>
-      </main>
+          <div class="row g-4" id="gearList"></div>
+          <div class="text-center my-5 d-none" id="noResults">
+            <h4>Không tìm thấy sản phẩm nào</h4>
+          </div>
+        </main>
+      </div>
     </div>
-  </div>
 
-  <!-- Modal Thêm/Sửa Gear -->
-  <div class="modal fade" id="gearModal" tabindex="-1" aria-labelledby="gearModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="gearModalLabel">Thêm Gear Mới</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form id="gearForm">
-            <input type="hidden" id="gearId">
-
-            <div class="mb-3">
-              <label for="title" class="form-label">Tên Gear <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" id="title" required>
-              <div class="invalid-feedback">Tên không được để trống</div>
-            </div>
-
-            <div class="mb-3">
-              <label for="description" class="form-label">Mô tả <span class="text-danger">*</span></label>
-              <textarea class="form-control" id="description" rows="3" required></textarea>
-              <div class="invalid-feedback">Mô tả phải từ 20 ký tự trở lên</div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="price" class="form-label">Giá (VND) <span class="text-danger">*</span></label>
-                <input type="number" class="form-control" id="price" min="1" required>
-                <div class="invalid-feedback">Giá phải lớn hơn 0</div>
+    <!-- Gear Modal -->
+    <div class="modal fade" id="gearModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="gearModalLabel">Thêm sản phẩm mới</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="gearForm">
+              <div class="mb-3">
+                <label for="title" class="form-label">Tên sản phẩm *</label
+                ><input type="text" class="form-control" id="title" required />
               </div>
-              <div class="col-md-6 mb-3">
-                <label for="category" class="form-label">Danh mục</label>
-                <select class="form-select" id="category">
-                  <option value="mouse">Chuột + Lót chuột</option>
-                  <option value="keyboard">Bàn phím</option>
-                  <option value="headset">Tai nghe</option>
-                  <option value="speaker">Loa + Mic</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Mức độ hot (Priority)</label>
-                <div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="priority" id="priorityHigh" value="High" checked>
-                    <label class="form-check-label" for="priorityHigh">High</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="priority" id="priorityMedium" value="Medium">
-                    <label class="form-check-label" for="priorityMedium">Medium</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="priority" id="priorityLow" value="Low">
-                    <label class="form-check-label" for="priorityLow">Low</label>
-                  </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="category" class="form-label"
+                    >Loại sản phẩm *</label
+                  ><select class="form-select" id="category" required>
+                    <option value="">-- Chọn --</option>
+                    <option value="Chuột">Chuột</option>
+                    <option value="Bàn phím">Bàn phím</option>
+                    <option value="Tai nghe">Tai nghe</option>
+                    <option value="Loa/Mic">Loa/Mic</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="price" class="form-label">Giá (VND) *</label
+                  ><input
+                    type="text"
+                    class="form-control"
+                    id="price"
+                    required
+                  />
                 </div>
               </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Trạng thái</label>
-                <div class="form-check form-switch mt-2">
-                  <input class="form-check-input" type="checkbox" id="status" checked>
-                  <label class="form-check-label" for="status">Còn hàng</label>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="quantity" class="form-label">Số lượng *</label
+                  ><input
+                    type="number"
+                    class="form-control"
+                    id="quantity"
+                    min="0"
+                    required
+                  />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="imageInput" class="form-label">Chọn ảnh *</label
+                  ><input
+                    type="file"
+                    class="form-control"
+                    id="imageInput"
+                    accept="image/*"
+                  />
                 </div>
               </div>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-          <button type="button" class="btn btn-primary" id="saveGearBtn">Lưu Gear</button>
+              <div class="mb-3">
+                <label for="description" class="form-label">Mô tả *</label
+                ><textarea
+                  class="form-control"
+                  id="description"
+                  rows="3"
+                  required
+                ></textarea>
+              </div>
+              <div class="mb-3">
+                <img
+                  id="imagePreview"
+                  src=""
+                  class="img-fluid rounded border d-none"
+                  style="max-height: 220px"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Đóng</button
+            ><button type="button" class="btn btn-primary" id="saveGearBtn">
+              Lưu
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Footer -->
-  <footer class="bg-dark text-white text-center py-4 mt-5">
-    <div class="container">
-      <p>© 2026 GearHub - Quản lý & Bán gear máy tính gaming | Bài tập lớn Cơ sở Lập trình Web</p>
-    </div>
-  </footer>
-
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Script quản lý gear (CRUD + LocalStorage + Filter/Search) -->
-  <script>
-    // Khởi tạo
-    let gears = JSON.parse(localStorage.getItem('gears')) || [];
-    let editId = null;
-
-    const gearList = document.getElementById('gearList');
-    const gearForm = document.getElementById('gearForm');
-    const gearModal = new bootstrap.Modal(document.getElementById('gearModal'));
-    const noResults = document.getElementById('noResults');
-
-    // Render danh sách gear
-    function renderGears(filteredGears = gears) {
-      gearList.innerHTML = '';
-      if (filteredGears.length === 0) {
-        noResults.classList.remove('d-none');
-        return;
-      }
-      noResults.classList.add('d-none');
-
-      filteredGears.forEach(gear => {
-        const card = document.createElement('div');
-        card.className = 'col-6 col-md-4 col-lg-3';
-        card.innerHTML = `
-          <div class="card h-100 shadow-sm border-0">
-            <img src="https://via.placeholder.com/300x200?text=${gear.title}" class="card-img-top" alt="${gear.title}">
-            <div class="card-body text-center">
-              <h6 class="card-title">${gear.title}</h6>
-              <p class="text-danger fw-bold">${gear.price.toLocaleString('vi-VN')}đ</p>
-              <p class="small text-muted">${gear.category}</p>
-              <span class="badge ${gear.status === 'InStock' ? 'bg-success' : 'bg-danger'} mb-2">
-                ${gear.status === 'InStock' ? 'Còn hàng' : 'Hết hàng'}
-              </span>
-              <span class="badge ${gear.priority === 'High' ? 'bg-danger' : gear.priority === 'Medium' ? 'bg-warning' : 'bg-secondary'}">
-                ${gear.priority}
-              </span>
-              <div class="mt-3">
-                <button class="btn btn-sm btn-warning me-1" onclick="editGear('${gear.id}')">Sửa</button>
-                <button class="btn btn-sm btn-danger me-1" onclick="deleteGear('${gear.id}')">Xóa</button>
-                <button class="btn btn-sm btn-info" onclick="toggleStatus('${gear.id}')">
-                  ${gear.status === 'InStock' ? 'Đánh dấu hết' : 'Đánh dấu còn'}
-                </button>
-              </div>
-            </div>
+    <!-- Profile Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              <i class="fas fa-user-circle me-2"></i>Thông tin hồ sơ
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
           </div>
+          <div class="modal-body" id="profileModalBody"></div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Đóng
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- My Orders Modal -->
+    <div class="modal fade" id="myOrdersModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              <i class="fas fa-shopping-bag me-2"></i>Đơn hàng của tôi
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body" id="myOrdersModalBody"></div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Đóng
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Đăng nhập</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="loginForm">
+              <div class="mb-3">
+                <label for="loginEmail" class="form-label">Email</label
+                ><input
+                  type="email"
+                  class="form-control"
+                  id="loginEmail"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="loginPassword" class="form-label">Mật khẩu</label
+                ><input
+                  type="password"
+                  class="form-control"
+                  id="loginPassword"
+                  required
+                />
+              </div>
+              <button type="submit" class="btn btn-primary w-100">
+                Đăng nhập
+              </button>
+            </form>
+            <hr />
+            <p class="text-center mb-0">
+              Chưa có tài khoản?
+              <a
+                href="#"
+                onclick="
+                  showRegisterModal();
+                  return false;
+                "
+                >Đăng ký ngay</a
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Đăng ký tài khoản</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="registerForm">
+              <div class="mb-3">
+                <label for="regFullname" class="form-label">Họ và tên</label
+                ><input
+                  type="text"
+                  class="form-control"
+                  id="regFullname"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="regEmail" class="form-label">Email</label
+                ><input
+                  type="email"
+                  class="form-control"
+                  id="regEmail"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="regPassword" class="form-label">Mật khẩu</label
+                ><input
+                  type="password"
+                  class="form-control"
+                  id="regPassword"
+                  required
+                />
+                <div class="form-text">Mật khẩu phải có ít nhất 6 ký tự</div>
+              </div>
+              <div class="mb-3">
+                <label for="regConfirmPassword" class="form-label"
+                  >Xác nhận mật khẩu</label
+                ><input
+                  type="password"
+                  class="form-control"
+                  id="regConfirmPassword"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Vai trò</label>
+                <div>
+                  <div class="form-check form-check-inline">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="role"
+                      value="user"
+                      checked
+                    /><label class="form-check-label">Khách hàng</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="role"
+                      value="admin"
+                    /><label class="form-check-label">Quản trị viên</label>
+                  </div>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-success w-100">
+                Đăng ký
+              </button>
+            </form>
+            <hr />
+            <p class="text-center mb-0">
+              Đã có tài khoản?
+              <a
+                href="#"
+                onclick="
+                  showLoginModal();
+                  return false;
+                "
+                >Đăng nhập ngay</a
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message Modal -->
+    <div class="modal fade" id="messageModal" tabindex="-1">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Thông báo</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body" id="messageModalBody"></div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+            >
+              Đóng
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="bg-dark text-white text-center py-4 mt-5">
+      <div class="container">
+        <p>
+          © 2026 GearHub - Quản lý & Bán gear máy tính gaming | Bài tập lớn Cơ
+          sở Lập trình Web
+        </p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/products.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script>
+      function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const cartCount = document.getElementById("cartCount");
+        if (cartCount)
+          cartCount.textContent = cart.reduce((s, i) => s + i.quantity, 0);
+      }
+      updateCartCount();
+      document.getElementById("cartBtn")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        if (cart.length === 0) alert("Giỏ hàng trống!");
+        else {
+          let msg = "Giỏ hàng:\n";
+          cart.forEach(
+            (i) =>
+              (msg += `- ${i.title}: ${i.quantity} x ${i.price.toLocaleString("vi-VN")}đ\n`),
+          );
+          msg += `\nTổng: ${cart.reduce((s, i) => s + i.price * i.quantity, 0).toLocaleString("vi-VN")}đ`;
+          alert(msg);
+        }
+      });
+
+      function showProfile() {
+        const user = JSON.parse(localStorage.getItem("currentUser"));
+        if (!user) return alert("Vui lòng đăng nhập!");
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        const full = users.find((u) => u.id === user.id);
+        document.getElementById("profileModalBody").innerHTML = `
+          <div class="text-center mb-3"><i class="fas fa-user-circle fa-4x text-primary"></i></div>
+          <table class="table table-borderless"><tr><th>Họ tên:</th><td>${user.fullname}</td></tr>
+          <tr><th>Email:</th><td>${user.email}</td></tr>
+          <tr><th>Vai trò:</th><td><span class="badge ${user.role === "admin" ? "bg-danger" : "bg-primary"}">${user.role === "admin" ? "Quản trị viên" : "Khách hàng"}</span></td></tr>
+          <tr><th>Ngày tạo:</th><td>${full?.createdAt || "Không rõ"}</td></tr>
+          <tr><th>ID:</th><td><small>${user.id}</small></td></tr></table>
         `;
-        gearList.appendChild(card);
+        new bootstrap.Modal(document.getElementById("profileModal")).show();
+      }
+
+      function showMyOrders() {
+        const user = JSON.parse(localStorage.getItem("currentUser"));
+        if (!user) return alert("Vui lòng đăng nhập!");
+        const orders = JSON.parse(localStorage.getItem("orders")) || [];
+        const my = orders.filter(
+          (o) => o.userId === user.id || o.userEmail === user.email,
+        );
+        const body = document.getElementById("myOrdersModalBody");
+        if (my.length === 0)
+          body.innerHTML = `<div class="text-center py-4"><i class="fas fa-shopping-bag fa-3x text-muted"></i><p class="text-muted">Chưa có đơn hàng nào.</p></div>`;
+        else
+          body.innerHTML = `<div class="list-group">${my.map((o) => `<div class="list-group-item"><div><strong class="text-primary">${o.id}</strong><p class="mb-1 mt-2"><strong>Sản phẩm:</strong> ${o.productName}</p><p class="mb-1"><strong>Số lượng:</strong> ${o.quantity}</p><p class="mb-1"><strong>Tổng:</strong> <span class="text-danger fw-bold">${o.totalPrice.toLocaleString("vi-VN")}đ</span></p><p class="mb-0"><small>Ngày: ${o.createdAt}</small></p></div><span class="badge bg-warning text-dark">${o.status}</span></div>`).join("")}</div>`;
+        new bootstrap.Modal(document.getElementById("myOrdersModal")).show();
+      }
+
+      document.getElementById("profileBtn")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        showProfile();
       });
-    }
-
-    // Lưu vào LocalStorage
-    function saveGears() {
-      localStorage.setItem('gears', JSON.stringify(gears));
-    }
-
-    // Thêm/Sửa gear
-    document.getElementById('saveGearBtn').addEventListener('click', () => {
-      const title = document.getElementById('title').value.trim();
-      const description = document.getElementById('description').value.trim();
-      const price = parseInt(document.getElementById('price').value);
-      const category = document.getElementById('category').value;
-      const priority = document.querySelector('input[name="priority"]:checked').value;
-      const status = document.getElementById('status').checked ? 'InStock' : 'OutOfStock';
-
-      // Validation
-      if (!title) {
-        document.getElementById('title').classList.add('is-invalid');
-        return;
-      }
-      if (description.length < 20) {
-        document.getElementById('description').classList.add('is-invalid');
-        return;
-      }
-      if (isNaN(price) || price <= 0) {
-        document.getElementById('price').classList.add('is-invalid');
-        return;
-      }
-
-      const gear = {
-        id: editId || Date.now().toString(),
-        title,
-        description,
-        price,
-        category,
-        priority,
-        status
-      };
-
-      if (editId) {
-        const index = gears.findIndex(g => g.id === editId);
-        gears[index] = gear;
-        editId = null;
-        document.getElementById('gearModalLabel').textContent = 'Thêm Gear Mới';
-      } else {
-        gears.push(gear);
-      }
-
-      saveGears();
-      renderGears();
-      gearModal.hide();
-      gearForm.reset();
-    });
-
-    // Edit gear
-    function editGear(id) {
-      const gear = gears.find(g => g.id === id);
-      if (gear) {
-        editId = id;
-        document.getElementById('gearModalLabel').textContent = 'Sửa Gear';
-        document.getElementById('title').value = gear.title;
-        document.getElementById('description').value = gear.description;
-        document.getElementById('price').value = gear.price;
-        document.getElementById('category').value = gear.category;
-        document.querySelector(`input[name="priority"][value="${gear.priority}"]`).checked = true;
-        document.getElementById('status').checked = gear.status === 'InStock';
-        gearModal.show();
-      }
-    }
-
-    // Delete gear
-    function deleteGear(id) {
-      if (confirm('Bạn có chắc muốn xóa gear này?')) {
-        gears = gears.filter(g => g.id !== id);
-        saveGears();
-        renderGears();
-      }
-    }
-
-    // Toggle status
-    function toggleStatus(id) {
-      const gear = gears.find(g => g.id === id);
-      if (gear) {
-        gear.status = gear.status === 'InStock' ? 'OutOfStock' : 'InStock';
-        saveGears();
-        renderGears();
-      }
-    }
-
-    // Clear All
-    document.getElementById('clearAllBtn').addEventListener('click', () => {
-      if (confirm('Bạn có chắc muốn xóa toàn bộ danh sách gear?')) {
-        gears = [];
-        saveGears();
-        renderGears();
-      }
-    });
-
-    // Search
-    document.getElementById('searchInput').addEventListener('input', filterGears);
-    document.getElementById('statusFilter').addEventListener('change', filterGears);
-    document.getElementById('priorityFilter').addEventListener('change', filterGears);
-    document.getElementById('sortSelect').addEventListener('change', filterGears);
-
-    function filterGears() {
-      const search = document.getElementById('searchInput').value.toLowerCase();
-      const status = document.getElementById('statusFilter').value;
-      const priority = document.getElementById('priorityFilter').value;
-      const sort = document.getElementById('sortSelect').value;
-
-      let filtered = gears.filter(gear => {
-        const matchSearch = gear.title.toLowerCase().includes(search) || gear.description.toLowerCase().includes(search);
-        const matchStatus = status === 'all' || gear.status === status;
-        const matchPriority = priority === 'all' || gear.priority === priority;
-        return matchSearch && matchStatus && matchPriority;
+      document.getElementById("myOrdersBtn")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        showMyOrders();
       });
-
-      // Sort
-      if (sort === 'price-asc') filtered.sort((a, b) => a.price - b.price);
-      if (sort === 'price-desc') filtered.sort((a, b) => b.price - a.price);
-      if (sort === 'newest') filtered.sort((a, b) => b.id - a.id);
-      if (sort === 'priority') filtered.sort((a, b) => {
-        const prio = { High: 3, Medium: 2, Low: 1 };
-        return prio[b.priority] - prio[a.priority];
-      });
-
-      renderGears(filtered);
-    }
-
-    // Load ban đầu
-    renderGears();
-  </script>
-  <script src="assets/js/app.js"></script>
-</body>
+    </script>
+  </body>
 </html>
