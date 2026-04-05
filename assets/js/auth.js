@@ -1,4 +1,3 @@
-// auth.js
 function parseJSON(value, fallback) {
   try {
     return value ? JSON.parse(value) : fallback;
@@ -67,41 +66,34 @@ if (!users.length) {
   localStorage.setItem("users", JSON.stringify(users));
 }
 
-// Hàm kiểm tra đăng nhập
 function isLoggedIn() {
   return currentUser !== null;
 }
 
-// Hàm kiểm tra Admin
 function isAdmin() {
   return currentUser !== null && currentUser.role === "admin";
 }
 
-// Hàm kiểm tra User (khách hàng)
 function isUser() {
   return currentUser !== null && currentUser.role === "user";
 }
 
-// Hàm đăng ký
 function register(email, password, fullname, role) {
-  // Kiểm tra email đã tồn tại chưa
   const existingUser = users.find((u) => u.email === email);
   if (existingUser) {
     return { success: false, message: "Email đã được đăng ký!" };
   }
 
-  // Kiểm tra password
   if (password.length < 6) {
     return { success: false, message: "Mật khẩu phải có ít nhất 6 ký tự!" };
   }
 
-  // Tạo user mới
   const newUser = {
     id: Date.now(),
     email: email,
     password: password,
     fullname: fullname || email.split("@")[0],
-    role: role, // "admin" hoặc "user"    coupons: [], // Mã giảm giá    createdAt: new Date().toLocaleString("vi-VN"),
+    role: role,
   };
 
   users.push(newUser);
@@ -118,7 +110,6 @@ function register(email, password, fullname, role) {
   return { success: true, message: "Đăng ký thành công!" };
 }
 
-// Hàm đăng nhập
 function login(email, password) {
   const user = users.find((u) => u.email === email && u.password === password);
 
@@ -141,7 +132,6 @@ function login(email, password) {
   };
 }
 
-// Hàm đăng xuất
 function logout() {
   currentUser = null;
   localStorage.removeItem("currentUser");
@@ -149,7 +139,6 @@ function logout() {
   return { success: true, message: "Đã đăng xuất!" };
 }
 
-// Hàm cập nhật giao diện theo trạng thái đăng nhập
 function updateAuthUI() {
   const authButtons = document.getElementById("authButtons");
   const userInfo = document.getElementById("userInfo");
@@ -175,25 +164,49 @@ function updateAuthUI() {
   if (typeof window.updateWarehouseLink === "function") {
     window.updateWarehouseLink();
   }
+
+  updateAdminButtons();
 }
 
-// Hàm mở modal đăng nhập
+function updateAdminButtons() {
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const isAdmin = currentUser && currentUser.role === "admin";
+  document.querySelectorAll(".admin-only").forEach((el) => {
+    if (isAdmin) el.classList.remove("d-none");
+    else el.classList.add("d-none");
+  });
+}
+
 function showLoginModal() {
-  const loginModal = createModal("loginModal");
-  if (loginModal) {
+  const loginEl = document.getElementById("loginModal");
+  const registerEl = document.getElementById("registerModal");
+
+  if (registerEl) {
+    const registerModal = bootstrap.Modal.getOrCreateInstance(registerEl);
+    registerModal.hide();
+  }
+
+  if (loginEl) {
+    const loginModal = bootstrap.Modal.getOrCreateInstance(loginEl);
     loginModal.show();
   }
 }
 
-// Hàm mở modal đăng ký
 function showRegisterModal() {
-  const registerModal = createModal("registerModal");
-  if (registerModal) {
+  const loginEl = document.getElementById("loginModal");
+  const registerEl = document.getElementById("registerModal");
+
+  if (loginEl) {
+    const loginModal = bootstrap.Modal.getOrCreateInstance(loginEl);
+    loginModal.hide();
+  }
+
+  if (registerEl) {
+    const registerModal = bootstrap.Modal.getOrCreateInstance(registerEl);
     registerModal.show();
   }
 }
 
-// Hàm mở modal thông báo
 function showMessage(title, message, isError = false) {
   const modalTitle = document.getElementById("messageModalLabel");
   const modalBody = document.getElementById("messageModalBody");
@@ -211,7 +224,6 @@ function showMessage(title, message, isError = false) {
   }
 }
 
-// Xử lý đăng ký
 function handleRegister(e) {
   e.preventDefault();
 
@@ -221,6 +233,18 @@ function handleRegister(e) {
   const confirmPassword = document.getElementById("regConfirmPassword").value;
   const role =
     document.querySelector('input[name="role"]:checked')?.value || "user";
+
+  const securityCode =
+    document.getElementById("securityCode")?.value.trim() || "";
+
+  if (role === "admin" && securityCode !== "2006") {
+    showMessage(
+      "Lỗi",
+      "Mã bảo mật không chính xác! Chỉ Quản trị viên mới biết mã này.",
+      true,
+    );
+    return;
+  }
 
   if (!fullname || !email || !password) {
     showMessage("Lỗi", "Vui lòng nhập đầy đủ thông tin!", true);
@@ -236,7 +260,9 @@ function handleRegister(e) {
 
   if (result.success) {
     showMessage("Thành công", result.message);
-    const registerModal = getModalInstance("registerModal");
+    const registerModal = bootstrap.Modal.getOrCreateInstance(
+      document.getElementById("registerModal"),
+    );
     if (registerModal) {
       registerModal.hide();
     }
@@ -247,7 +273,6 @@ function handleRegister(e) {
   }
 }
 
-// Xử lý đăng nhập
 function handleLogin(e) {
   e.preventDefault();
 
@@ -269,7 +294,7 @@ function handleLogin(e) {
     }
     document.getElementById("loginForm").reset();
     updateAuthUI();
-    // Reload lại trang products nếu đang ở đó để cập nhật nút CRUD
+
     if (window.location.pathname.includes("products.html")) {
       location.reload();
     }
@@ -278,7 +303,6 @@ function handleLogin(e) {
   }
 }
 
-// Xử lý đăng xuất
 function handleLogout() {
   const result = logout();
   showMessage("Thành công", result.message);
@@ -288,11 +312,10 @@ function handleLogout() {
   }
 }
 
-// Khởi tạo event listeners
 document.addEventListener("DOMContentLoaded", () => {
   updateAuthUI();
+  updateAdminButtons();
 
-  // Gán sự kiện cho các nút
   const loginBtn = document.getElementById("loginBtn");
   const registerBtn = document.getElementById("registerBtn");
   const logoutBtn = document.getElementById("logoutBtn");
@@ -301,15 +324,12 @@ document.addEventListener("DOMContentLoaded", () => {
   if (registerBtn) registerBtn.addEventListener("click", showRegisterModal);
   if (logoutBtn) logoutBtn.addEventListener("click", handleLogout);
 
-  // Form đăng nhập
   const loginForm = document.getElementById("loginForm");
   if (loginForm) loginForm.addEventListener("submit", handleLogin);
 
-  // Form đăng ký
   const registerForm = document.getElementById("registerForm");
   if (registerForm) registerForm.addEventListener("submit", handleRegister);
 
-  // Đóng modal khi click outside
   const modals = document.querySelectorAll(".modal");
   modals.forEach((modal) => {
     modal.addEventListener("hidden.bs.modal", function () {
@@ -319,7 +339,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// Export functions để dùng trong HTML
 window.showLoginModal = showLoginModal;
 window.showRegisterModal = showRegisterModal;
 window.handleLogout = handleLogout;
@@ -355,3 +374,25 @@ window.showMyOrders = function () {
   });
   alert(msg);
 };
+
+function updateAdminLinks() {
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+  const adminOrdersLink = document.getElementById("adminOrdersLink");
+  if (adminOrdersLink) {
+    if (currentUser && currentUser.role === "admin") {
+      adminOrdersLink.style.display = "block";
+    } else {
+      adminOrdersLink.style.display = "none";
+    }
+  }
+
+  const adminOrdersNav = document.getElementById("adminOrdersNav");
+  if (adminOrdersNav) {
+    if (currentUser && currentUser.role === "admin") {
+      adminOrdersNav.classList.remove("d-none");
+    } else {
+      adminOrdersNav.classList.add("d-none");
+    }
+  }
+}

@@ -32,9 +32,18 @@ if (searchInputMain && initialSearchQuery) {
   searchInputMain.value = initialSearchQuery;
 }
 
+// Sync navbar search input với searchInputMain (2 chiều)
+const navbarSearch = document.getElementById("searchInputHome");
+if (navbarSearch && searchInputMain) {
+  navbarSearch.addEventListener("input", () => {
+    searchInputMain.value = navbarSearch.value;
+    filterAndRender();
+  });
+}
+
 const savedCategory = localStorage.getItem("preSelectedCategory") || "";
 if (savedCategory) {
-  currentCategory = savedCategory;
+  currentCategory = savedCategory === "all" ? "all" : savedCategory;
   if (categoryFilter) categoryFilter.value = savedCategory;
   localStorage.removeItem("preSelectedCategory");
 }
@@ -60,7 +69,6 @@ function resetForm() {
   document.getElementById("gearModalLabel").textContent = "Thêm sản phẩm mới";
 }
 
-// Xử lý giá
 priceInput.addEventListener("input", function (e) {
   let val = this.value.replace(/[^0-9]/g, "");
   if (val === "") {
@@ -82,7 +90,6 @@ function getPriceValue() {
   return priceInput._rawValue || 0;
 }
 
-// HIỂN THỊ NÚT ADMIN - QUAN TRỌNG
 function updateAdminButtons() {
   const adminBtns = document.querySelectorAll(".admin-only");
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
@@ -267,13 +274,16 @@ function filterAndRender() {
   let filtered = [...gears];
   if (currentCategory !== "all")
     filtered = filtered.filter((g) => g.category === currentCategory);
-  const search = searchInputMain?.value.toLowerCase() || "";
+
+  const navSearch =
+    document.getElementById("searchInputHome")?.value.toLowerCase() || "";
+  const search = (searchInputMain?.value || navSearch).toLowerCase().trim();
   if (search)
     filtered = filtered.filter(
       (g) =>
         g.title.toLowerCase().includes(search) ||
         g.category.toLowerCase().includes(search) ||
-        g.description.toLowerCase().includes(search),
+        (g.description && g.description.toLowerCase().includes(search)),
     );
   const sort = sortSelect?.value || "newest";
   if (sort === "price-asc") filtered.sort((a, b) => a.price - b.price);
@@ -320,7 +330,6 @@ document.querySelectorAll(".category-link").forEach((link) => {
   });
 });
 
-// Tạo dữ liệu mẫu nếu chưa có
 if (gears.length === 0) {
   gears = [
     {
@@ -498,4 +507,4 @@ if (gears.length === 0) {
 
 filterAndRender();
 updateCartCountDisplay();
-updateAdminButtons(); // GỌI HÀM NÀY ĐỂ ẨN/HIỆN NÚT ADMIN
+updateAdminButtons();

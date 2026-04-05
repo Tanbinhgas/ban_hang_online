@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý đơn hàng - GearHub Admin</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body>
+    <nav
+      class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top"
+    >
+      <div class="container">
+        <a class="navbar-brand fw-bold fs-4" href="index.html"
+          ><i class="fas fa-bolt me-1" style="color: var(--red)"></i>GearHub</a
+        >
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarContent"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarContent">
+          <form class="d-flex mx-auto my-2 my-lg-0 w-50" id="homeSearchForm">
+            <input
+              class="form-control me-2 rounded-pill"
+              type="search"
+              placeholder="Tìm gear..."
+            />
+            <button class="btn btn-outline-light rounded-pill" type="submit">
+              <i class="fas fa-search"></i>
+            </button>
+          </form>
+
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="products.html">Catalog</a>
+            </li>
+            <li class="nav-item admin-only">
+              <a class="nav-link" href="about.html">About / Stats</a>
+            </li>
+            <li class="nav-item admin-only">
+              <a class="nav-link" href="warehouse.html">Kho hàng</a>
+            </li>
+            <li class="nav-item admin-only">
+              <a class="nav-link active" href="admin-orders.html"
+                >Quản lý đơn</a
+              >
+            </li>
+          </ul>
+
+          <ul class="navbar-nav ms-3">
+            <li class="nav-item">
+              <a class="nav-link" href="#" id="cartBtn">
+                <i class="fas fa-shopping-cart me-1"></i>Giỏ hàng
+                <span class="badge bg-danger rounded-pill" id="cartCount"
+                  >0</span
+                >
+              </a>
+            </li>
+          </ul>
+
+          <ul class="navbar-nav ms-3" id="authButtons">
+            <li class="nav-item">
+              <a class="nav-link" href="#" id="loginBtn"
+                ><i class="fas fa-sign-in-alt me-1"></i>Đăng nhập</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" id="registerBtn"
+                ><i class="fas fa-user-plus me-1"></i>Đăng ký</a
+              >
+            </li>
+          </ul>
+
+          <ul class="navbar-nav ms-3 d-none" id="userInfo">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="userDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+              >
+                <i class="fas fa-user-circle me-1"></i
+                ><span id="userName">User</span>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                  <a class="dropdown-item" href="#" onclick="showProfile()"
+                    ><i class="fas fa-user me-2"></i>Hồ sơ</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="#" onclick="showMyOrders()"
+                    ><i class="fas fa-shopping-bag me-2"></i>Đơn hàng của tôi</a
+                  >
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a class="dropdown-item text-danger" href="#" id="logoutBtn"
+                    ><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</a
+                  >
+                </li>
+              </ul>
+            </li>
+          </ul>
+
+          <ul class="navbar-nav ms-2">
+            <li class="nav-item">
+              <button
+                id="themeToggle"
+                class="btn btn-sm ms-1"
+                title="Toggle theme"
+              >
+                <i class="fas fa-sun"></i>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid mt-5 pt-5">
+      <div class="row">
+        <main class="col-12 px-md-5">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold">
+              <i class="fas fa-history me-2 text-primary"></i>Lịch sử đơn hàng
+            </h2>
+            <div>
+              <button class="btn btn-success" id="exportExcelBtn">
+                <i class="fas fa-file-excel me-1"></i>Xuất Excel
+              </button>
+              <button class="btn btn-danger ms-2" id="exportPdfBtn">
+                <i class="fas fa-file-pdf me-1"></i>Xuất PDF
+              </button>
+            </div>
+          </div>
+
+          <div
+            id="unauthorizedAlert"
+            class="alert alert-warning d-none"
+            role="alert"
+          >
+            Bạn cần đăng nhập bằng tài khoản quản trị viên để xem lịch sử đơn
+            hàng.
+            <a href="index.html" class="alert-link">Quay về trang chủ</a>.
+          </div>
+
+          <div id="adminOrdersContent">
+            <div class="card shadow-sm mb-4">
+              <div class="card-body">
+                <div class="row g-3">
+                  <div class="col-md-3">
+                    <label class="form-label">Tìm kiếm</label>
+                    <input
+                      type="text"
+                      id="searchOrders"
+                      class="form-control"
+                      placeholder="Mã đơn, tên khách, sản phẩm..."
+                    />
+                  </div>
+                  <div class="col-md-2">
+                    <label class="form-label">Trạng thái</label>
+                    <select id="statusFilter" class="form-select">
+                      <option value="all">Tất cả</option>
+                      <option value="Đang xử lý">Đang xử lý</option>
+                      <option value="Đã xác nhận">Đã xác nhận</option>
+                      <option value="Đang giao">Đang giao</option>
+                      <option value="Hoàn thành">Hoàn thành</option>
+                      <option value="Đã hủy">Đã hủy</option>
+                    </select>
+                  </div>
+                  <div class="col-md-2">
+                    <label class="form-label">Từ ngày</label>
+                    <input type="date" id="fromDate" class="form-control" />
+                  </div>
+                  <div class="col-md-2">
+                    <label class="form-label">Đến ngày</label>
+                    <input type="date" id="toDate" class="form-control" />
+                  </div>
+                  <div class="col-md-3 d-flex align-items-end">
+                    <button
+                      id="resetFilters"
+                      class="btn btn-outline-secondary w-100"
+                    >
+                      <i class="fas fa-undo me-1"></i>Đặt lại
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+              <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                  <div class="card-body">
+                    <h6 class="card-title">Tổng đơn hàng</h6>
+                    <h3 id="totalOrders">0</h3>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card bg-success text-white">
+                  <div class="card-body">
+                    <h6 class="card-title">Hoàn thành</h6>
+                    <h3 id="completedOrders">0</h3>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card bg-warning text-dark">
+                  <div class="card-body">
+                    <h6 class="card-title">Đang xử lý</h6>
+                    <h3 id="pendingOrders">0</h3>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card bg-danger text-white">
+                  <div class="card-body">
+                    <h6 class="card-title">Doanh thu</h6>
+                    <h3 id="totalRevenue">0đ</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card shadow-sm">
+              <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">
+                  <i class="fas fa-list me-2"></i>Danh sách đơn hàng
+                </h5>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Mã đơn</th>
+                        <th>Ngày đặt</th>
+                        <th>Khách hàng</th>
+                        <th>SĐT</th>
+                        <th>Sản phẩm</th>
+                        <th>Số lượng</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                      </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                      <tr>
+                        <td colspan="9" class="text-center py-4">
+                          Đang tải...
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div class="modal fade" id="updateStatusModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Cập nhật trạng thái đơn hàng</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p><strong>Mã đơn:</strong> <span id="modalOrderId"></span></p>
+            <p>
+              <strong>Sản phẩm:</strong> <span id="modalProductName"></span>
+            </p>
+            <div class="mb-3">
+              <label class="form-label">Trạng thái mới</label>
+              <select id="newStatus" class="form-select">
+                <option value="Đang xử lý">Đang xử lý</option>
+                <option value="Đã xác nhận">Đã xác nhận</option>
+                <option value="Đang giao">Đang giao</option>
+                <option value="Hoàn thành">Hoàn thành</option>
+                <option value="Đã hủy">Đã hủy</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Hủy
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              id="confirmUpdateStatus"
+            >
+              Cập nhật
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="orderDetailModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Chi tiết đơn hàng</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body" id="orderDetailBody"></div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Đóng
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="bg-dark text-white text-center py-4 mt-5">
+      <div class="container">
+        <p>
+          © 2026 GearHub - Quản lý & Bán gear máy tính gaming | Bài tập lớn Cơ
+          sở Lập trình Web
+        </p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script>
+      let allOrders = [];
+      let currentUpdateOrderId = null;
+
+      function formatPrice(value) {
+        return Number(value).toLocaleString("vi-VN") + "đ";
+      }
+
+      function checkAdminAccess() {
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        const content = document.getElementById("adminOrdersContent");
+        const alert = document.getElementById("unauthorizedAlert");
+
+        if (!currentUser || currentUser.role !== "admin") {
+          content.classList.add("d-none");
+          alert.classList.remove("d-none");
+          return false;
+        }
+        content.classList.remove("d-none");
+        alert.classList.add("d-none");
+        return true;
+      }
+
+      function loadOrders() {
+        allOrders = JSON.parse(localStorage.getItem("orders")) || [];
+        applyFilters();
+        updateStatistics();
+      }
+
+      function updateStatistics() {
+        const orders = JSON.parse(localStorage.getItem("orders")) || [];
+        const total = orders.length;
+        const completed = orders.filter(
+          (o) => o.status === "Hoàn thành",
+        ).length;
+        const pending = orders.filter(
+          (o) =>
+            o.status === "Đang xử lý" ||
+            o.status === "Đã xác nhận" ||
+            o.status === "Đang giao",
+        ).length;
+        const revenue = orders
+          .filter((o) => o.status === "Hoàn thành")
+          .reduce((sum, o) => sum + (o.totalPrice || 0), 0);
+
+        document.getElementById("totalOrders").textContent = total;
+        document.getElementById("completedOrders").textContent = completed;
+        document.getElementById("pendingOrders").textContent = pending;
+        document.getElementById("totalRevenue").textContent =
+          formatPrice(revenue);
+      }
+
+      function applyFilters() {
+        const searchTerm =
+          document.getElementById("searchOrders")?.value.toLowerCase() || "";
+        const statusFilter =
+          document.getElementById("statusFilter")?.value || "all";
+        const fromDate = document.getElementById("fromDate")?.value;
+        const toDate = document.getElementById("toDate")?.value;
+
+        let filtered = [...allOrders];
+
+        if (searchTerm) {
+          filtered = filtered.filter(
+            (order) =>
+              order.id.toLowerCase().includes(searchTerm) ||
+              order.customerName?.toLowerCase().includes(searchTerm) ||
+              order.productName?.toLowerCase().includes(searchTerm) ||
+              order.userEmail?.toLowerCase().includes(searchTerm),
+          );
+        }
+
+        if (statusFilter !== "all") {
+          filtered = filtered.filter((order) => order.status === statusFilter);
+        }
+
+        if (fromDate) {
+          filtered = filtered.filter((order) => {
+            const orderDate = order.createdAt?.split(",")[0] || "";
+            return orderDate >= fromDate;
+          });
+        }
+
+        if (toDate) {
+          filtered = filtered.filter((order) => {
+            const orderDate = order.createdAt?.split(",")[0] || "";
+            return orderDate <= toDate;
+          });
+        }
+
+        renderOrdersTable(filtered);
+      }
+
+      function renderOrdersTable(orders) {
+        const tbody = document.getElementById("ordersTableBody");
+        if (!orders.length) {
+          tbody.innerHTML =
+            '<tr><td colspan="9" class="text-center py-4">Không có đơn hàng nào</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = orders
+          .map(
+            (order) => `
+          <tr>
+            <td><span class="fw-bold">${order.id}</span></td>
+            <td><small>${order.createdAt || "N/A"}</small></td>
+            <td>${order.customerName || "N/A"}</td>
+            <td>${order.phone || "N/A"}</td>
+            <td>${order.productName || "N/A"}</td>
+            <td>${order.quantity || 0}</td>
+            <td class="text-danger fw-bold">${formatPrice(order.totalPrice || 0)}</td>
+            <td>${getStatusBadge(order.status)}</td>
+            <td>
+              <button class="btn btn-sm btn-outline-primary me-1" onclick="viewOrderDetail('${order.id}')" title="Chi tiết">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-warning" onclick="openUpdateStatusModal('${order.id}')" title="Cập nhật trạng thái">
+                <i class="fas fa-edit"></i>
+              </button>
+            </td>
+          </tr>
+        `,
+          )
+          .join("");
+      }
+
+      function getStatusBadge(status) {
+        const statusMap = {
+          "Đang xử lý": "bg-warning text-dark",
+          "Đã xác nhận": "bg-info text-dark",
+          "Đang giao": "bg-primary text-white",
+          "Hoàn thành": "bg-success text-white",
+          "Đã hủy": "bg-danger text-white",
+        };
+        const className = statusMap[status] || "bg-secondary text-white";
+        return `<span class="badge ${className}">${status}</span>`;
+      }
+
+      function viewOrderDetail(orderId) {
+        const order = allOrders.find((o) => o.id === orderId);
+        if (!order) return;
+
+        const modalBody = document.getElementById("orderDetailBody");
+        modalBody.innerHTML = `
+          <div class="row">
+            <div class="col-md-6">
+              <h6 class="fw-bold">Thông tin đơn hàng</h6>
+              <table class="table table-sm">
+                <tr><td class="fw-semibold">Mã đơn:</td><td>${order.id}</td></tr>
+                <tr><td class="fw-semibold">Ngày đặt:</td><td>${order.createdAt || "N/A"}</td></tr>
+                <tr><td class="fw-semibold">Trạng thái:</td><td>${getStatusBadge(order.status)}</td></tr>
+                <tr><td class="fw-semibold">Sản phẩm:</td><td>${order.productName || "N/A"}</td></tr>
+                <tr><td class="fw-semibold">Số lượng:</td><td>${order.quantity || 0}</td></tr>
+                <tr><td class="fw-semibold">Tổng tiền:</td><td class="text-danger fw-bold">${formatPrice(order.totalPrice || 0)}</td></tr>
+              </table>
+            </div>
+            <div class="col-md-6">
+              <h6 class="fw-bold">Thông tin khách hàng</h6>
+              <table class="table table-sm">
+                <tr><td class="fw-semibold">Tên KH:</td><td>${order.customerName || "N/A"}</td></tr>
+                <tr><td class="fw-semibold">SĐT:</td><td>${order.phone || "N/A"}</td></tr>
+                <tr><td class="fw-semibold">Email:</td><td>${order.userEmail || "N/A"}</td></tr>
+                <tr><td class="fw-semibold">Địa chỉ:</td><td>${order.address || "N/A"}</td></tr>
+                <tr><td class="fw-semibold">Vận chuyển:</td><td>${order.shippingMethod || "N/A"}</td></tr>
+                <tr><td class="fw-semibold">Thanh toán:</td><td>${order.paymentMethod || "N/A"}</td></tr>
+              </table>
+            </div>
+          </div>
+        `;
+        new bootstrap.Modal(document.getElementById("orderDetailModal")).show();
+      }
+
+      function openUpdateStatusModal(orderId) {
+        const order = allOrders.find((o) => o.id === orderId);
+        if (!order) return;
+
+        currentUpdateOrderId = orderId;
+        document.getElementById("modalOrderId").textContent = order.id;
+        document.getElementById("modalProductName").textContent =
+          order.productName;
+        document.getElementById("newStatus").value = order.status;
+        new bootstrap.Modal(
+          document.getElementById("updateStatusModal"),
+        ).show();
+      }
+
+      function updateOrderStatus() {
+        const newStatus = document.getElementById("newStatus").value;
+        const orderIndex = allOrders.findIndex(
+          (o) => o.id === currentUpdateOrderId,
+        );
+
+        if (orderIndex !== -1) {
+          allOrders[orderIndex].status = newStatus;
+          localStorage.setItem("orders", JSON.stringify(allOrders));
+          loadOrders();
+
+          const messageModal = new bootstrap.Modal(
+            document.getElementById("messageModal"),
+          );
+          document.getElementById("messageModalBody").innerHTML = `
+            <i class="fas fa-check-circle text-success fa-2x mb-2 d-block"></i>
+            Đã cập nhật trạng thái đơn hàng thành công!
+          `;
+          messageModal.show();
+        }
+
+        bootstrap.Modal.getInstance(
+          document.getElementById("updateStatusModal"),
+        ).hide();
+      }
+
+      function exportToExcel() {
+        const orders = allOrders.map((order) => ({
+          "Mã đơn": order.id,
+          "Ngày đặt": order.createdAt,
+          "Khách hàng": order.customerName,
+          SĐT: order.phone,
+          Email: order.userEmail,
+          "Sản phẩm": order.productName,
+          "Số lượng": order.quantity,
+          "Đơn giá": order.totalPrice / order.quantity,
+          "Tổng tiền": order.totalPrice,
+          "Trạng thái": order.status,
+          "Địa chỉ": order.address,
+          "PT vận chuyển": order.shippingMethod,
+          "PT thanh toán": order.paymentMethod,
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(orders);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Lịch sử đơn hàng");
+        XLSX.writeFile(
+          wb,
+          `GearHub_Orders_${new Date().toISOString().split("T")[0]}.xlsx`,
+        );
+      }
+
+      function exportToPDF() {
+        const element = document.createElement("div");
+        element.innerHTML = `
+          <div style="padding: 20px; font-family: Arial;">
+            <h2 style="text-align: center; color: #dc3545;">GEARHUB - LỊCH SỬ ĐƠN HÀNG</h2>
+            <p style="text-align: center;">Ngày xuất: ${new Date().toLocaleString("vi-VN")}</p>
+            <hr/>
+            <table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: #333; color: white;">
+                  <th>Mã đơn</th><th>Ngày</th><th>KH</th><th>SĐT</th><th>Sản phẩm</th><th>SL</th><th>Tổng tiền</th><th>Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${allOrders
+                  .map(
+                    (order) => `
+                  <tr>
+                    <td>${order.id}</td>
+                    <td>${order.createdAt || "N/A"}</td>
+                    <td>${order.customerName || "N/A"}</td>
+                    <td>${order.phone || "N/A"}</td>
+                    <td>${order.productName || "N/A"}</td>
+                    <td>${order.quantity || 0}</td>
+                    <td>${formatPrice(order.totalPrice || 0)}</td>
+                    <td>${order.status || "N/A"}</td>
+                  </tr>
+                `,
+                  )
+                  .join("")}
+              </tbody>
+            </table>
+            <hr/>
+            <p><strong>Tổng số đơn: ${allOrders.length}</strong></p>
+            <p><strong>Tổng doanh thu: ${formatPrice(allOrders.filter((o) => o.status === "Hoàn thành").reduce((s, o) => s + (o.totalPrice || 0), 0))}</strong></p>
+          </div>
+        `;
+
+        html2pdf()
+          .from(element)
+          .set({
+            margin: [10, 10, 10, 10],
+            filename: `GearHub_Orders_${new Date().toISOString().split("T")[0]}.pdf`,
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
+          })
+          .save();
+      }
+
+      document
+        .getElementById("searchOrders")
+        ?.addEventListener("input", applyFilters);
+      document
+        .getElementById("statusFilter")
+        ?.addEventListener("change", applyFilters);
+      document
+        .getElementById("fromDate")
+        ?.addEventListener("change", applyFilters);
+      document
+        .getElementById("toDate")
+        ?.addEventListener("change", applyFilters);
+      document.getElementById("resetFilters")?.addEventListener("click", () => {
+        document.getElementById("searchOrders").value = "";
+        document.getElementById("statusFilter").value = "all";
+        document.getElementById("fromDate").value = "";
+        document.getElementById("toDate").value = "";
+        applyFilters();
+      });
+      document
+        .getElementById("exportExcelBtn")
+        ?.addEventListener("click", exportToExcel);
+      document
+        .getElementById("exportPdfBtn")
+        ?.addEventListener("click", exportToPDF);
+      document
+        .getElementById("confirmUpdateStatus")
+        ?.addEventListener("click", updateOrderStatus);
+
+      document.addEventListener("DOMContentLoaded", () => {
+        if (checkAdminAccess()) {
+          loadOrders();
+        }
+        updateCartCount();
+        updateWarehouseLink();
+      });
+    </script>
+  </body>
+</html>

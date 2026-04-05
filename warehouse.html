@@ -14,7 +14,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="assets/css/style.css" />
@@ -24,7 +24,9 @@
       class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top"
     >
       <div class="container">
-        <a class="navbar-brand fw-bold fs-4" href="index.html">GearHub</a>
+        <a class="navbar-brand fw-bold fs-4" href="index.html"
+          ><i class="fas fa-bolt me-1" style="color: var(--red)"></i>GearHub</a
+        >
         <button
           class="navbar-toggler"
           type="button"
@@ -35,7 +37,7 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarContent">
-          <form class="d-flex mx-auto my-2 my-lg-0 w-50">
+          <form class="d-flex mx-auto my-2 my-lg-0 w-50" id="homeSearchForm">
             <input
               class="form-control me-2 rounded-pill"
               type="search"
@@ -54,16 +56,14 @@
             <li class="nav-item">
               <a class="nav-link" href="products.html">Catalog</a>
             </li>
-            <li class="nav-item d-none">
-              <a
-                class="nav-link active"
-                id="warehouseLink"
-                href="warehouse.html"
-                >Kho hàng</a
-              >
-            </li>
-            <li class="nav-item">
+            <li class="nav-item admin-only">
               <a class="nav-link" href="about.html">About / Stats</a>
+            </li>
+            <li class="nav-item admin-only">
+              <a class="nav-link active" href="warehouse.html">Kho hàng</a>
+            </li>
+            <li class="nav-item admin-only">
+              <a class="nav-link" href="admin-orders.html">Quản lý đơn</a>
             </li>
           </ul>
 
@@ -123,6 +123,18 @@
               </ul>
             </li>
           </ul>
+
+          <ul class="navbar-nav ms-2">
+            <li class="nav-item">
+              <button
+                id="themeToggle"
+                class="btn btn-sm ms-1"
+                title="Toggle theme"
+              >
+                <i class="fas fa-sun"></i>
+              </button>
+            </li>
+          </ul>
         </div>
       </div>
     </nav>
@@ -139,9 +151,15 @@
               <li class="list-group-item">
                 <a href="products.html" class="text-decoration-none">Catalog</a>
               </li>
-              <li class="list-group-item">
+
+              <li class="list-group-item admin-only">
                 <a href="warehouse.html" class="text-decoration-none"
                   >Kho hàng</a
+                >
+              </li>
+              <li class="list-group-item admin-only">
+                <a href="admin-orders.html" class="text-decoration-none"
+                  >Quản lý đơn</a
                 >
               </li>
               <li class="list-group-item">
@@ -199,7 +217,6 @@
       </div>
     </div>
 
-    <!-- Modal chỉnh sửa số lượng -->
     <div class="modal fade" id="quantityModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -327,8 +344,18 @@
         if (modal) modal.hide();
       }
 
+      function updateAdminButtons() {
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        const isAdmin = currentUser && currentUser.role === "admin";
+        document.querySelectorAll(".admin-only").forEach((el) => {
+          if (isAdmin) el.classList.remove("d-none");
+          else el.classList.add("d-none");
+        });
+      }
+
       document.addEventListener("DOMContentLoaded", () => {
         renderWarehouse();
+        updateAdminButtons();
         document
           .getElementById("saveQuantityBtn")
           .addEventListener("click", saveQuantity);

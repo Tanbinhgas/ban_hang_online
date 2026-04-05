@@ -14,7 +14,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="assets/css/style.css" />
@@ -24,7 +24,9 @@
       class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top"
     >
       <div class="container">
-        <a class="navbar-brand fw-bold fs-4" href="index.html">GearHub</a>
+        <a class="navbar-brand fw-bold fs-4" href="index.html"
+          ><i class="fas fa-bolt me-1" style="color: var(--red)"></i>GearHub</a
+        >
         <button
           class="navbar-toggler"
           type="button"
@@ -35,11 +37,12 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarContent">
-          <form class="d-flex mx-auto my-2 my-lg-0 w-50">
+          <form class="d-flex mx-auto my-2 my-lg-0 w-50" id="homeSearchForm">
             <input
+              id="searchInputHome"
               class="form-control me-2 rounded-pill"
               type="search"
-              placeholder="Tìm sản phẩm..."
+              placeholder="Tìm gear..."
               aria-label="Search"
             />
             <button class="btn btn-outline-light rounded-pill" type="submit">
@@ -54,7 +57,7 @@
             <li class="nav-item">
               <a class="nav-link" href="products.html">Catalog</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item admin-only">
               <a class="nav-link" href="about.html">About / Stats</a>
             </li>
             <li class="nav-item d-none">
@@ -120,6 +123,18 @@
               </ul>
             </li>
           </ul>
+
+          <ul class="navbar-nav ms-2">
+            <li class="nav-item">
+              <button
+                id="themeToggle"
+                class="btn btn-sm ms-1"
+                title="Toggle theme"
+              >
+                <i class="fas fa-sun"></i>
+              </button>
+            </li>
+          </ul>
         </div>
       </div>
     </nav>
@@ -145,15 +160,238 @@
         </div>
       </div>
 
-      <div class="row g-4" id="productDetail">
-        <!-- Product detail will be loaded here -->
-      </div>
+      <div class="row g-4" id="productDetail"></div>
 
       <div class="row mt-5">
         <div class="col-12">
           <h3 class="mb-4">Sản phẩm tương tự</h3>
-          <div class="row g-3" id="similarProducts">
-            <!-- Similar products will be loaded here -->
+          <div class="row g-3" id="similarProducts"></div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="bg-dark text-white text-center py-4 mt-5">
+      <div class="container">
+        <p>
+          © 2026 GearHub - Quản lý & Bán gear máy tính gaming | Bài tập lớn Cơ
+          sở Lập trình Web
+        </p>
+      </div>
+    </footer>
+
+    <div
+      class="modal fade"
+      id="loginModal"
+      tabindex="-1"
+      aria-labelledby="loginModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="loginModalLabel">Đăng nhập</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="loginForm">
+              <div class="mb-3">
+                <label for="loginEmail" class="form-label">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="loginEmail"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="loginPassword" class="form-label">Mật khẩu</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="loginPassword"
+                  required
+                />
+              </div>
+              <button type="submit" class="btn btn-primary w-100">
+                Đăng nhập
+              </button>
+            </form>
+            <hr />
+            <p class="text-center mb-0">
+              Chưa có tài khoản?
+              <a
+                href="#"
+                onclick="
+                  showRegisterModal();
+                  return false;
+                "
+                >Đăng ký ngay</a
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="registerModal"
+      tabindex="-1"
+      aria-labelledby="registerModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="registerModalLabel">
+              Đăng ký tài khoản
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="registerForm">
+              <div class="mb-3">
+                <label for="regFullname" class="form-label">Họ và tên</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="regFullname"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="regEmail" class="form-label">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="regEmail"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="regPassword" class="form-label">Mật khẩu</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="regPassword"
+                  required
+                />
+                <div class="form-text">Mật khẩu phải có ít nhất 6 ký tự</div>
+              </div>
+              <div class="mb-3">
+                <label for="regConfirmPassword" class="form-label"
+                  >Xác nhận mật khẩu</label
+                >
+                <input
+                  type="password"
+                  class="form-control"
+                  id="regConfirmPassword"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Vai trò</label>
+                <div>
+                  <div class="form-check form-check-inline">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="role"
+                      id="roleUser"
+                      value="user"
+                      checked
+                    />
+                    <label class="form-check-label" for="roleUser"
+                      >Khách hàng (User)</label
+                    >
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="role"
+                      id="roleAdmin"
+                      value="admin"
+                    />
+                    <label class="form-check-label" for="roleAdmin"
+                      >Quản trị viên (Admin)</label
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="mb-3 d-none" id="securityCodeDiv">
+                <label for="securityCode" class="form-label"
+                  >Mã bảo mật <span class="text-danger">*</span></label
+                >
+                <input
+                  type="password"
+                  class="form-control"
+                  id="securityCode"
+                  placeholder="Nhập mã bảo mật"
+                  maxlength="4"
+                />
+                <div class="form-text">
+                  Chỉ cần nhập nếu đăng ký tài khoản Quản trị viên
+                </div>
+              </div>
+              <button type="submit" class="btn btn-success w-100">
+                Đăng ký
+              </button>
+            </form>
+            <hr />
+            <p class="text-center mb-0">
+              Đã có tài khoản?
+              <a
+                href="#"
+                onclick="
+                  showLoginModal();
+                  return false;
+                "
+                >Đăng nhập ngay</a
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="messageModal"
+      tabindex="-1"
+      aria-labelledby="messageModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="messageModalLabel">Thông báo</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body" id="messageModalBody"></div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+            >
+              Đóng
+            </button>
           </div>
         </div>
       </div>
@@ -238,11 +476,11 @@
                       ${Object.entries(specs)
                         .map(
                           ([key, value]) => `
-                        <tr>
-                          <td class="fw-semibold">${key}</td>
-                          <td>${value}</td>
-                        </tr>
-                      `,
+                          <tr>
+                            <td class="fw-semibold">${key}</td>
+                            <td>${value}</td>
+                          </tr>
+                        `,
                         )
                         .join("")}
                     </tbody>
@@ -349,6 +587,23 @@
         updateCartCount();
         updateWarehouseLink();
       });
+
+      const roleRadios = document.querySelectorAll('input[name="role"]');
+      const securityCodeDiv = document.getElementById("securityCodeDiv");
+
+      if (roleRadios.length && securityCodeDiv) {
+        roleRadios.forEach((radio) => {
+          radio.addEventListener("change", function () {
+            if (this.value === "admin") {
+              securityCodeDiv.classList.remove("d-none");
+            } else {
+              securityCodeDiv.classList.add("d-none");
+              const securityCodeInput = document.getElementById("securityCode");
+              if (securityCodeInput) securityCodeInput.value = "";
+            }
+          });
+        });
+      }
     </script>
   </body>
 </html>

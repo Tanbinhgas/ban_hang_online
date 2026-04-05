@@ -27,7 +27,9 @@
       class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top"
     >
       <div class="container">
-        <a class="navbar-brand fw-bold fs-4" href="index.html">GearHub</a>
+        <a class="navbar-brand fw-bold fs-4" href="index.html"
+          ><i class="fas fa-bolt me-1" style="color: var(--red)"></i>GearHub</a
+        >
         <button
           class="navbar-toggler"
           type="button"
@@ -41,7 +43,7 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarContent">
-          <form class="d-flex mx-auto my-2 my-lg-0 w-50">
+          <form class="d-flex mx-auto my-2 my-lg-0 w-50" id="homeSearchForm">
             <input
               class="form-control me-2 rounded-pill"
               type="search"
@@ -60,7 +62,7 @@
             <li class="nav-item">
               <a class="nav-link" href="products.html">Catalog</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item admin-only">
               <a class="nav-link active" aria-current="page" href="about.html"
                 >About / Stats</a
               >
@@ -128,46 +130,29 @@
               </ul>
             </li>
           </ul>
+
+          <ul class="navbar-nav ms-2">
+            <li class="nav-item">
+              <button
+                id="themeToggle"
+                class="btn btn-sm ms-1"
+                title="Toggle theme"
+              >
+                <i class="fas fa-sun"></i>
+              </button>
+            </li>
+          </ul>
         </div>
       </div>
     </nav>
 
     <div class="container-fluid mt-5 pt-5">
       <div class="row">
-        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
-          <div class="position-sticky pt-3" style="top: 70px">
-            <h5 class="p-3 border-bottom text-center fw-bold">Danh mục Gear</h5>
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item">
-                <a href="#" class="text-decoration-none text-dark">
-                  <i class="fas fa-mouse-pointer me-2 text-primary"></i> Chuột +
-                  Lót chuột
-                </a>
-              </li>
-              <li class="list-group-item">
-                <a href="#" class="text-decoration-none text-dark">
-                  <i class="fas fa-keyboard me-2 text-success"></i> Bàn phím
-                </a>
-              </li>
-              <li class="list-group-item">
-                <a href="#" class="text-decoration-none text-dark">
-                  <i class="fas fa-headphones me-2 text-danger"></i> Tai nghe
-                </a>
-              </li>
-              <li class="list-group-item">
-                <a href="#" class="text-decoration-none text-dark">
-                  <i class="fas fa-volume-up me-2 text-warning"></i> Loa + Mic
-                </a>
-              </li>
-            </ul>
-          </div>
-        </nav>
-
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <main class="col-12 px-md-5">
           <div class="text-center mb-5">
             <h1 class="fw-bold">About GearHub</h1>
             <p class="lead text-muted">
-              Nền tảng quản lý và giới thiệu gear máy tính gaming/PC hàng đầu
+              Nền tảng quản lý và giới thiệu gear máy tính gaming hàng đầu
             </p>
           </div>
 
@@ -176,7 +161,7 @@
               <h3>Giới thiệu dự án</h3>
               <p>
                 GearHub là website quản lý danh sách gear gaming (chuột, bàn
-                phím, tai nghe, loa + mic, màn hình, laptop, PC...), hỗ trợ đầy
+                phím, tai nghe, loa + mic, ghế gaming...), hỗ trợ đầy
                 đủ CRUD, tìm kiếm, lọc, sắp xếp và lưu trữ LocalStorage. Dự án
                 được xây dựng bởi nhóm 5 sinh viên Đại học CMC cho môn Cơ sở Lập
                 trình Web.
@@ -300,8 +285,6 @@
       </div>
     </footer>
 
-    <!-- Modals for Authentication -->
-    <!-- Login Modal -->
     <div
       class="modal fade"
       id="loginModal"
@@ -361,7 +344,6 @@
       </div>
     </div>
 
-    <!-- Register Modal -->
     <div
       class="modal fade"
       id="registerModal"
@@ -453,6 +435,21 @@
                   </div>
                 </div>
               </div>
+              <div class="mb-3 d-none" id="securityCodeDiv">
+                <label for="securityCode" class="form-label"
+                  >Mã bảo mật <span class="text-danger">*</span></label
+                >
+                <input
+                  type="password"
+                  class="form-control"
+                  id="securityCode"
+                  placeholder="Nhập mã bảo mật"
+                  maxlength="4"
+                />
+                <div class="form-text">
+                  Chỉ cần nhập nếu đăng ký tài khoản Quản trị viên
+                </div>
+              </div>
               <button type="submit" class="btn btn-success w-100">
                 Đăng ký
               </button>
@@ -474,7 +471,6 @@
       </div>
     </div>
 
-    <!-- Message Modal -->
     <div
       class="modal fade"
       id="messageModal"
@@ -531,9 +527,7 @@
         "Bàn phím",
         "Tai nghe",
         "Loa/Mic",
-        "Màn hình",
-        "Laptop",
-        "PC",
+        "Ghế gaming",
       ];
       const categoryCount = Object.fromEntries(
         categories.map((category) => [
@@ -558,9 +552,7 @@
             "Bàn phím",
             "Tai nghe",
             "Loa + Mic",
-            "Màn hình",
-            "Laptop",
-            "PC",
+            "Ghế gaming",
           ],
           datasets: [
             {
@@ -569,18 +561,14 @@
                 categoryCount["Bàn phím"],
                 categoryCount["Tai nghe"],
                 categoryCount["Loa/Mic"],
-                categoryCount["Màn hình"],
-                categoryCount["Laptop"],
-                categoryCount["PC"],
+                categoryCount["Ghế gaming"],
               ],
               backgroundColor: [
                 "#0d6efd",
                 "#198754",
                 "#dc3545",
                 "#ffc107",
-                "#0dcaf0",
-                "#6f42c1",
-                "#343a40",
+                "#a855f7",
               ],
               borderWidth: 1,
             },
@@ -592,7 +580,7 @@
           plugins: {
             legend: {
               position: "bottom",
-              labels: { font: { family: "Poppins", size: 14 } },
+              labels: { font: { family: "Rajdhani", size: 14 }, color: "#e8e8f0" },
             },
           },
         },
@@ -605,6 +593,23 @@
           alert("Cảm ơn phản hồi của bạn! Chúng tôi sẽ liên hệ sớm.");
           this.reset();
         });
+
+      const roleRadios = document.querySelectorAll('input[name="role"]');
+      const securityCodeDiv = document.getElementById("securityCodeDiv");
+
+      if (roleRadios.length && securityCodeDiv) {
+        roleRadios.forEach((radio) => {
+          radio.addEventListener("change", function () {
+            if (this.value === "admin") {
+              securityCodeDiv.classList.remove("d-none");
+            } else {
+              securityCodeDiv.classList.add("d-none");
+              const securityCodeInput = document.getElementById("securityCode");
+              if (securityCodeInput) securityCodeInput.value = "";
+            }
+          });
+        });
+      }
     </script>
     <script src="assets/js/app.js"></script>
     <script src="assets/js/auth.js"></script>

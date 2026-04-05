@@ -2,30 +2,31 @@ document.addEventListener("DOMContentLoaded", () => {
   const themeToggle = document.getElementById("themeToggle");
   const body = document.body;
 
-  const savedTheme = localStorage.getItem("theme") || "light";
+  const savedTheme = localStorage.getItem("theme") || "dark";
 
-  if (savedTheme === "dark") {
-    body.classList.add("dark-mode");
+  if (savedTheme === "light") {
+    body.classList.add("light-mode");
   } else {
-    body.classList.remove("dark-mode");
+    body.classList.remove("light-mode");
   }
 
-  if (themeToggle) {
-    themeToggle.innerHTML = body.classList.contains("dark-mode")
+  function updateToggleIcon() {
+    if (!themeToggle) return;
+    const isLight = body.classList.contains("light-mode");
+    themeToggle.innerHTML = isLight
       ? '<i class="fas fa-moon"></i>'
       : '<i class="fas fa-sun"></i>';
+    themeToggle.title = isLight ? "Chế độ tối" : "Chế độ sáng";
   }
+
+  updateToggleIcon();
 
   if (themeToggle) {
     themeToggle.addEventListener("click", () => {
-      body.classList.toggle("dark-mode");
-
-      const isDark = body.classList.contains("dark-mode");
-      localStorage.setItem("theme", isDark ? "dark" : "light");
-
-      themeToggle.innerHTML = isDark
-        ? '<i class="fas fa-moon"></i>'
-        : '<i class="fas fa-sun"></i>';
+      body.classList.toggle("light-mode");
+      const isLight = body.classList.contains("light-mode");
+      localStorage.setItem("theme", isLight ? "light" : "dark");
+      updateToggleIcon();
     });
   }
 
@@ -36,6 +37,14 @@ document.addEventListener("DOMContentLoaded", () => {
     homeSearchForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const query = homeSearchInput?.value.trim() || "";
+      if (window.location.pathname.endsWith("products.html")) {
+        const mainSearch = document.getElementById("searchInputMain");
+        if (mainSearch) {
+          mainSearch.value = query;
+          mainSearch.dispatchEvent(new Event("input"));
+        }
+        return;
+      }
       const targetUrl = query
         ? `products.html?q=${encodeURIComponent(query)}`
         : "products.html";
@@ -91,125 +100,105 @@ function createCartModal() {
   if (document.getElementById("cartModal")) return;
 
   const modal = document.createElement("div");
+  modal.className = "modal fade";
+  modal.id = "cartModal";
+  modal.tabIndex = -1;
+  modal.setAttribute("aria-hidden", "true");
   modal.innerHTML = `
-    <div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-xl modal-dialog-scrollable">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Giỏ hàng của bạn</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body px-0">
-            <div class="container-fluid px-3">
-              <div id="cartModalItems"></div>
-              <div id="cartModalEmpty" class="text-center py-5 d-none">
-                <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
-                <p class="text-muted">Giỏ hàng đang trống.</p>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer d-flex justify-content-between flex-wrap gap-2">
-            <button type="button" class="btn btn-outline-danger" id="clearCartBtn">Xóa giỏ hàng</button>
-            <div class="d-flex align-items-center gap-3">
-              <div class="fw-semibold">Tổng: <span id="cartModalTotal">0đ</span></div>
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-              <button type="button" class="btn btn-primary" id="checkoutCartBtn">Thanh toán</button>
-            </div>
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fas fa-shopping-cart me-2" style="color:var(--red)"></i>Giỏ Hàng</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="cartModalBody">
+          <p class="text-muted text-center py-4">Giỏ hàng trống</p>
+        </div>
+        <div class="modal-footer d-flex justify-content-between align-items-center">
+          <span id="cartTotalDisplay" class="fw-bold" style="font-family:var(--font-display);color:var(--red)"></span>
+          <div>
+            <button class="btn btn-secondary me-2" data-bs-dismiss="modal">Tiếp tục mua</button>
+            <button class="btn btn-danger" onclick="goToCheckout()">
+              <i class="fas fa-bolt me-1"></i>Thanh toán
+            </button>
           </div>
         </div>
       </div>
-    </div>
-  `;
-
+    </div>`;
   document.body.appendChild(modal);
-
-  document.getElementById("clearCartBtn")?.addEventListener("click", clearCart);
-  document
-    .getElementById("checkoutCartBtn")
-    ?.addEventListener("click", checkoutCart);
-}
-
-function renderCartModal() {
-  const cart = getCart();
-  const itemsContainer = document.getElementById("cartModalItems");
-  const emptyContainer = document.getElementById("cartModalEmpty");
-  const totalEl = document.getElementById("cartModalTotal");
-
-  if (!itemsContainer || !emptyContainer || !totalEl) return;
-
-  if (!cart.length) {
-    itemsContainer.innerHTML = "";
-    emptyContainer.classList.remove("d-none");
-    totalEl.textContent = "0đ";
-    return;
-  }
-
-  emptyContainer.classList.add("d-none");
-  itemsContainer.innerHTML = cart
-    .map(
-      (item) => `
-        <div class="d-flex align-items-center justify-content-between border-bottom py-3">
-          <div class="d-flex align-items-center gap-3">
-            <img src="${item.image}" alt="${item.title}" class="rounded" style="width:80px; height:80px; object-fit:contain; background:#fff;">
-            <div>
-              <h6 class="mb-1">${item.title}</h6>
-              <p class="mb-1 text-muted small">${item.category}</p>
-              <p class="mb-0">${formatPrice(item.price)} x ${item.quantity} = <strong>${formatPrice(
-                item.price * item.quantity,
-              )}</strong></p>
-            </div>
-          </div>
-          <button type="button" class="btn btn-sm btn-outline-danger" data-cart-remove="${item.id}" aria-label="Xóa sản phẩm">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-      `,
-    )
-    .join("");
-
-  totalEl.textContent = formatPrice(
-    cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
-  );
-
-  itemsContainer.querySelectorAll("[data-cart-remove]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const id = button.getAttribute("data-cart-remove");
-      if (id) removeCartItem(id);
-    });
-  });
 }
 
 function showCartModal() {
-  renderCartModal();
-  const cartModal = new bootstrap.Modal(document.getElementById("cartModal"));
-  cartModal.show();
-}
-
-function removeCartItem(id) {
-  const cart = getCart().filter((item) => item.id !== id);
-  saveCart(cart);
-  renderCartModal();
-  updateCartCount();
-}
-
-function clearCart() {
-  if (!confirm("Xóa toàn bộ sản phẩm trong giỏ hàng?")) return;
-  saveCart([]);
-  renderCartModal();
-  updateCartCount();
-}
-
-function checkoutCart() {
-  if (!isLoggedIn()) {
-    showLoginModal();
-    return;
-  }
   const cart = getCart();
+  const body = document.getElementById("cartModalBody");
+  const totalDisplay = document.getElementById("cartTotalDisplay");
+  if (!body) return;
+
   if (!cart.length) {
-    alert("Giỏ hàng đang trống!");
-    return;
+    body.innerHTML =
+      '<p class="text-muted text-center py-5"><i class="fas fa-shopping-cart fa-2x mb-3 d-block" style="color:var(--text-muted)"></i>Giỏ hàng đang trống</p>';
+    if (totalDisplay) totalDisplay.textContent = "";
+  } else {
+    let total = 0;
+    body.innerHTML = cart
+      .map((item) => {
+        total += item.price * item.quantity;
+        return `
+        <div class="d-flex align-items-center gap-3 py-2 border-bottom" style="border-color:var(--border)!important">
+          <img src="${item.image}" style="width:60px;height:60px;object-fit:contain;background:#0d0d14;border-radius:4px;border:1px solid var(--border)">
+          <div class="flex-grow-1">
+            <div style="font-family:var(--font-ui);font-weight:600;color:var(--text)">${item.title}</div>
+            <div style="font-family:var(--font-display);color:var(--red);font-size:.85rem">${Number(item.price).toLocaleString("vi-VN")}đ</div>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-sm btn-secondary px-2 py-0" onclick="changeCartQty('${item.id}',-1)">-</button>
+            <span style="font-family:var(--font-display);min-width:20px;text-align:center">${item.quantity}</span>
+            <button class="btn btn-sm btn-secondary px-2 py-0" onclick="changeCartQty('${item.id}',1)">+</button>
+          </div>
+          <button class="btn btn-sm" style="color:var(--red);background:none;border:none" onclick="removeFromCart('${item.id}')"><i class="fas fa-times"></i></button>
+        </div>`;
+      })
+      .join("");
+    if (totalDisplay)
+      totalDisplay.textContent =
+        "Tổng: " + Number(total).toLocaleString("vi-VN") + "đ";
+  }
+
+  const modalEl = document.getElementById("cartModal");
+  if (modalEl && window.bootstrap) {
+    const m = bootstrap.Modal.getOrCreateInstance(modalEl);
+    m.show();
+  }
+}
+
+function changeCartQty(id, delta) {
+  let cart = getCart();
+  const gears = JSON.parse(localStorage.getItem("gears")) || [];
+  const idx = cart.findIndex((i) => i.id === id);
+  if (idx === -1) return;
+  const gear = gears.find((g) => g.id === id);
+  const maxQty = gear ? gear.quantity : 99;
+  cart[idx].quantity = Math.max(
+    1,
+    Math.min(cart[idx].quantity + delta, maxQty),
+  );
+  saveCart(cart);
+  updateCartCount();
+  showCartModal();
+}
+
+function removeFromCart(id) {
+  let cart = getCart();
+  cart = cart.filter((i) => i.id !== id);
+  saveCart(cart);
+  updateCartCount();
+  showCartModal();
+}
+
+function goToCheckout() {
+  const modalEl = document.getElementById("cartModal");
+  if (modalEl && window.bootstrap) {
+    bootstrap.Modal.getInstance(modalEl)?.hide();
   }
   window.location.href = "order.html?checkout=1";
 }
-
-window.showCartModal = showCartModal;

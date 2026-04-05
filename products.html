@@ -14,7 +14,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="assets/css/style.css" />
@@ -24,7 +24,7 @@
       class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top"
     >
       <div class="container">
-        <a class="navbar-brand fw-bold fs-4" href="index.html">GearHub</a>
+        <a class="navbar-brand fw-bold fs-4" href="index.html"><i class="fas fa-bolt me-1" style="color:var(--red)"></i>GearHub</a>
         <button
           class="navbar-toggler"
           type="button"
@@ -35,11 +35,12 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarContent">
-          <form class="d-flex mx-auto my-2 my-lg-0 w-50">
+          <form class="d-flex mx-auto my-2 my-lg-0 w-50" id="homeSearchForm">
             <input
+              id="searchInputHome"
               class="form-control me-2 rounded-pill"
               type="search"
-              placeholder="Tìm sản phẩm..."
+              placeholder="Tìm gear..."
             />
             <button class="btn btn-outline-light rounded-pill" type="submit">
               <i class="fas fa-search"></i>
@@ -53,7 +54,7 @@
             <li class="nav-item">
               <a class="nav-link active" href="products.html">Catalog</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item  admin-only">
               <a class="nav-link" href="about.html">About / Stats</a>
             </li>
             <li class="nav-item d-none">
@@ -127,6 +128,14 @@
               </ul>
             </li>
           </ul>
+
+          <ul class="navbar-nav ms-2">
+            <li class="nav-item">
+              <button id="themeToggle" class="btn btn-sm ms-1" title="Toggle theme">
+                <i class="fas fa-sun"></i>
+              </button>
+            </li>
+          </ul>
         </div>
       </div>
     </nav>
@@ -138,69 +147,41 @@
             <h5 class="p-3 border-bottom text-center fw-bold">Danh mục Gear</h5>
             <ul class="list-group list-group-flush">
               <li class="list-group-item">
-                <a
-                  href="#"
-                  class="text-decoration-none category-link"
-                  data-category="all"
-                  >Tất cả</a
-                >
+                <a href="#" class="text-decoration-none category-link" data-category="all">
+                  <i class="fas fa-th-large me-2 text-secondary"></i> Tất cả
+                </a>
               </li>
               <li class="list-group-item">
-                <a
-                  href="#"
-                  class="text-decoration-none category-link"
-                  data-category="Chuột"
-                  >Chuột + Lót chuột</a
-                >
+                <a href="#" class="text-decoration-none category-link" data-category="Chuột">
+                  <i class="fas fa-mouse me-2 text-primary"></i> Chuột + Lót chuột
+                </a>
               </li>
               <li class="list-group-item">
-                <a
-                  href="#"
-                  class="text-decoration-none category-link"
-                  data-category="Bàn phím"
-                  >Bàn phím</a
-                >
+                <a href="#" class="text-decoration-none category-link" data-category="Bàn phím">
+                  <i class="fas fa-keyboard me-2 text-success"></i> Bàn phím
+                </a>
               </li>
               <li class="list-group-item">
-                <a
-                  href="#"
-                  class="text-decoration-none category-link"
-                  data-category="Tai nghe"
-                  >Tai nghe</a
-                >
+                <a href="#" class="text-decoration-none category-link" data-category="Tai nghe">
+                  <i class="fas fa-headphones me-2 text-danger"></i> Tai nghe
+                </a>
               </li>
               <li class="list-group-item">
-                <a
-                  href="#"
-                  class="text-decoration-none category-link"
-                  data-category="Loa/Mic"
-                  >Loa + Mic</a
-                >
+                <a href="#" class="text-decoration-none category-link" data-category="Loa/Mic">
+                  <i class="fas fa-volume-up me-2 text-warning"></i> Loa + Mic
+                </a>
               </li>
               <li class="list-group-item">
-                <a
-                  href="#"
-                  class="text-decoration-none category-link"
-                  data-category="Màn hình"
-                  >Màn hình</a
-                >
+                <a href="#" class="text-decoration-none category-link" data-category="Ghế gaming">
+                  <i class="fas fa-chair me-2 text-info"></i> Ghế gaming
+                </a>
               </li>
-              <li class="list-group-item">
-                <a
-                  href="#"
-                  class="text-decoration-none category-link"
-                  data-category="Laptop"
-                  >Laptop</a
-                >
-              </li>
-              <li class="list-group-item">
-                <a
-                  href="#"
-                  class="text-decoration-none category-link"
-                  data-category="PC"
-                  >PC</a
-                >
-              </li>
+              <li class="list-group-item admin-only" id="adminOrdersLink" style="display: none;">
+    <a href="admin-orders.html" class="text-decoration-none text-dark">
+      <i class="fas fa-history me-2 text-primary"></i> Quản lý đơn hàng
+    </a>
+  </li>
+</ul>
             </ul>
           </div>
         </nav>
@@ -248,13 +229,11 @@
             <div class="col-md-4 mb-3 mb-md-0">
               <select class="form-select" id="categoryFilter">
                 <option value="all">Tất cả loại sản phẩm</option>
-                <option value="Chuột">Chuột</option>
+                <option value="Chuột">Chuột + Lót chuột</option>
                 <option value="Bàn phím">Bàn phím</option>
                 <option value="Tai nghe">Tai nghe</option>
-                <option value="Loa/Mic">Loa/Mic</option>
-                <option value="Màn hình">Màn hình</option>
-                <option value="Laptop">Laptop</option>
-                <option value="PC">PC</option>
+                <option value="Loa/Mic">Loa + Mic</option>
+                <option value="Ghế gaming">Ghế gaming</option>
               </select>
             </div>
             <div class="col-md-4">
@@ -274,7 +253,7 @@
       </div>
     </div>
 
-    <!-- Gear Modal -->
+
     <div class="modal fade" id="gearModal" tabindex="-1">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -298,13 +277,11 @@
                     >Loại sản phẩm *</label
                   ><select class="form-select" id="category" required>
                     <option value="">-- Chọn --</option>
-                    <option value="Chuột">Chuột</option>
+                    <option value="Chuột">Chuột + Lót chuột</option>
                     <option value="Bàn phím">Bàn phím</option>
                     <option value="Tai nghe">Tai nghe</option>
-                    <option value="Loa/Mic">Loa/Mic</option>
-                    <option value="Màn hình">Màn hình</option>
-                    <option value="Laptop">Laptop</option>
-                    <option value="PC">PC</option>
+                    <option value="Loa/Mic">Loa + Mic</option>
+                    <option value="Ghế gaming">Ghế gaming</option>
                   </select>
                 </div>
                 <div class="col-md-6 mb-3">
@@ -520,7 +497,7 @@
       </div>
     </div>
 
-    <!-- Profile Modal -->
+
     <div class="modal fade" id="profileModal" tabindex="-1">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -548,7 +525,7 @@
       </div>
     </div>
 
-    <!-- My Orders Modal -->
+
     <div class="modal fade" id="myOrdersModal" tabindex="-1">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -576,7 +553,7 @@
       </div>
     </div>
 
-    <!-- Login Modal -->
+
     <div class="modal fade" id="loginModal" tabindex="-1">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -629,7 +606,7 @@
       </div>
     </div>
 
-    <!-- Register Modal -->
+
     <div class="modal fade" id="registerModal" tabindex="-1">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -703,6 +680,11 @@
                   </div>
                 </div>
               </div>
+              <div class="mb-3 d-none" id="securityCodeDiv">
+                <label for="securityCode" class="form-label">Mã bảo mật <span class="text-danger">*</span></label>
+                <input type="password" class="form-control" id="securityCode" placeholder="Nhập mã bảo mật" maxlength="4" />
+                <div class="form-text">Chỉ cần nhập nếu đăng ký tài khoản Quản trị viên</div>
+              </div>
               <button type="submit" class="btn btn-success w-100">
                 Đăng ký
               </button>
@@ -724,7 +706,6 @@
       </div>
     </div>
 
-    <!-- Message Modal -->
     <div class="modal fade" id="messageModal" tabindex="-1">
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
@@ -764,7 +745,6 @@
     <script src="assets/js/app.js"></script>
     <script src="assets/js/auth.js"></script>
     <script>
-      // Coupon management
       let coupons = JSON.parse(localStorage.getItem("coupons")) || [];
 
       function loadCoupons() {
@@ -778,16 +758,16 @@
         tbody.innerHTML = coupons
           .map(
             (coupon) => `
-          <tr>
-            <td>${coupon.code}</td>
-            <td>${coupon.discount}%</td>
-            <td>${new Date(coupon.expiry).toLocaleDateString("vi-VN")}</td>
-            <td>
+           <tr>
+             <td>${coupon.code}</td>
+             <td>${coupon.discount}%</td>
+             <td>${new Date(coupon.expiry).toLocaleDateString("vi-VN")}</td>
+             <td>
               <button class="btn btn-sm btn-danger" onclick="deleteCoupon('${coupon.code}')">
                 <i class="fas fa-trash"></i>
               </button>
-            </td>
-          </tr>
+             </td>
+           </tr>
         `,
           )
           .join("");
@@ -801,7 +781,7 @@
           .filter((u) => u.role === "user")
           .forEach((user) => {
             const option = document.createElement("option");
-            option.value = user.email; // Use email as value for search
+            option.value = user.email;
             option.setAttribute("data-user-id", user.id);
             datalist.appendChild(option);
           });
@@ -839,7 +819,6 @@
           coupons.push(coupon);
           localStorage.setItem("coupons", JSON.stringify(coupons));
 
-          // Send to users
           const users = JSON.parse(localStorage.getItem("users")) || [];
           if (sendTo === "all") {
             users
@@ -879,7 +858,6 @@
         coupons = coupons.filter((c) => c.code !== code);
         localStorage.setItem("coupons", JSON.stringify(coupons));
 
-        // Remove from users
         const users = JSON.parse(localStorage.getItem("users")) || [];
         users.forEach((user) => {
           if (user.coupons) {
@@ -911,11 +889,11 @@
         document.getElementById("profileModalBody").innerHTML = `
           <div class="text-center mb-3"><i class="fas fa-user-circle fa-4x text-primary"></i></div>
           <table class="table table-borderless"><tr><th>Họ tên:</th><td>${user.fullname}</td></tr>
-          <tr><th>Email:</th><td>${user.email}</td></tr>
-          <tr><th>Vai trò:</th><td><span class="badge ${user.role === "admin" ? "bg-danger" : "bg-primary"}">${user.role === "admin" ? "Quản trị viên" : "Khách hàng"}</span></td></tr>
-          <tr><th>Mã giảm giá:</th><td>${full?.coupons?.length ? full.coupons.join(", ") : "Chưa có"}</td></tr>
-          <tr><th>Ngày tạo:</th><td>${full?.createdAt || "Không rõ"}</td></tr>
-          <tr><th>ID:</th><td><small>${user.id}</small></td></tr></table>
+           <tr><th>Email:</th><td>${user.email}</td></tr>
+           <tr><th>Vai trò:</th><td><span class="badge ${user.role === "admin" ? "bg-danger" : "bg-primary"}">${user.role === "admin" ? "Quản trị viên" : "Khách hàng"}</span></td></tr>
+           <tr><th>Mã giảm giá:</th><td>${full?.coupons?.length ? full.coupons.join(", ") : "Chưa có"}</td></tr>
+           <tr><th>Ngày tạo:</th><td>${full?.createdAt || "Không rõ"}</td></tr>
+           <tr><th>ID:</th><td><small>${user.id}</small></td></tr></table>
         `;
         new bootstrap.Modal(document.getElementById("profileModal")).show();
       }
@@ -943,6 +921,23 @@
         e.preventDefault();
         showMyOrders();
       });
+
+      const roleRadios = document.querySelectorAll('input[name="role"]');
+      const securityCodeDiv = document.getElementById("securityCodeDiv");
+
+      if (roleRadios.length && securityCodeDiv) {
+        roleRadios.forEach(radio => {
+          radio.addEventListener("change", function() {
+            if (this.value === "admin") {
+              securityCodeDiv.classList.remove("d-none");
+            } else {
+              securityCodeDiv.classList.add("d-none");
+              const securityCodeInput = document.getElementById("securityCode");
+              if (securityCodeInput) securityCodeInput.value = "";
+            }
+          });
+        });
+      }
     </script>
   </body>
 </html>
