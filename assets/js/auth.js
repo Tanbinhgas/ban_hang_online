@@ -1,135 +1,49 @@
-function parseJSON(value, fallback) {
-  try {
-    return value ? JSON.parse(value) : fallback;
-  } catch (error) {
-    console.warn("Lỗi khi parse JSON từ localStorage:", error);
-    return fallback;
-  }
+// ── HELPERS ────────────────────────────────────────────────────
+function parseJSON(v, fb) {
+  try { return v ? JSON.parse(v) : fb; }
+  catch { return fb; }
 }
 
-function getModalElement(id) {
-  return document.getElementById(id);
-}
-
-function createModal(id) {
-  const element = getModalElement(id);
-  if (!element) return null;
-  if (window.bootstrap?.Modal) {
-    return new bootstrap.Modal(element);
-  }
-  return {
-    show() {
-      element.classList.add("show");
-      element.style.display = "block";
-      element.removeAttribute("aria-hidden");
-    },
-    hide() {
-      element.classList.remove("show");
-      element.style.display = "none";
-      element.setAttribute("aria-hidden", "true");
-    },
-  };
-}
-
-function getModalInstance(id) {
-  const element = getModalElement(id);
-  if (!element || !window.bootstrap?.Modal) return null;
-  return bootstrap.Modal.getInstance(element);
-}
-
+// ── STATE ──────────────────────────────────────────────────────
 let currentUser = parseJSON(localStorage.getItem("currentUser"), null);
-let users = parseJSON(localStorage.getItem("users"), []);
-
-const defaultUsers = [
-  {
-    id: "admin-1",
-    email: "admin@example.com",
-    password: "admin123",
-    fullname: "Admin GearHub",
-    role: "admin",
-    coupons: [],
-    createdAt: new Date().toLocaleString("vi-VN"),
-  },
-  {
-    id: "user-1",
-    email: "user@example.com",
-    password: "user123",
-    fullname: "Khách hàng GearHub",
-    role: "user",
-    coupons: [],
-    createdAt: new Date().toLocaleString("vi-VN"),
-  },
-];
+let users       = parseJSON(localStorage.getItem("users"), []);
 
 if (!users.length) {
-  users = defaultUsers;
+  users = [
+    { id: "admin-1", email: "admin@example.com", password: "admin123",
+      fullname: "Admin GearHub", role: "admin", createdAt: new Date().toLocaleString("vi-VN") },
+    { id: "user-1",  email: "user@example.com",  password: "user123",
+      fullname: "Khách hàng GearHub", role: "user",  createdAt: new Date().toLocaleString("vi-VN") },
+  ];
   localStorage.setItem("users", JSON.stringify(users));
 }
 
-function isLoggedIn() {
-  return currentUser !== null;
-}
+// ── ROLE CHECKS ────────────────────────────────────────────────
+function isLoggedIn() { return currentUser !== null; }
+function isAdmin()    { return currentUser?.role === "admin"; }
+function isUser()     { return currentUser?.role === "user"; }
 
-function isAdmin() {
-  return currentUser !== null && currentUser.role === "admin";
-}
-
-function isUser() {
-  return currentUser !== null && currentUser.role === "user";
-}
-
+// ── AUTH ACTIONS ───────────────────────────────────────────────
 function register(email, password, fullname, role) {
-  const existingUser = users.find((u) => u.email === email);
-  if (existingUser) {
+  if (users.find((u) => u.email === email))
     return { success: false, message: "Email đã được đăng ký!" };
-  }
-
-  if (password.length < 6) {
+  if (password.length < 6)
     return { success: false, message: "Mật khẩu phải có ít nhất 6 ký tự!" };
-  }
 
-  const newUser = {
-    id: Date.now(),
-    email: email,
-    password: password,
-    fullname: fullname || email.split("@")[0],
-    role: role,
-  };
-
-  users.push(newUser);
+  const u = { id: Date.now(), email, password, fullname: fullname || email.split("@")[0], role };
+  users.push(u);
   localStorage.setItem("users", JSON.stringify(users));
-
-  currentUser = {
-    id: newUser.id,
-    email: newUser.email,
-    fullname: newUser.fullname,
-    role: newUser.role,
-  };
+  currentUser = { id: u.id, email: u.email, fullname: u.fullname, role: u.role };
   localStorage.setItem("currentUser", JSON.stringify(currentUser));
-
   return { success: true, message: "Đăng ký thành công!" };
 }
 
 function login(email, password) {
-  const user = users.find((u) => u.email === email && u.password === password);
-
-  if (!user) {
-    return { success: false, message: "Email hoặc mật khẩu không đúng!" };
-  }
-
-  currentUser = {
-    id: user.id,
-    email: user.email,
-    fullname: user.fullname,
-    role: user.role,
-  };
-
+  const u = users.find((u) => u.email === email && u.password === password);
+  if (!u) return { success: false, message: "Email hoặc mật khẩu không đúng!" };
+  currentUser = { id: u.id, email: u.email, fullname: u.fullname, role: u.role };
   localStorage.setItem("currentUser", JSON.stringify(currentUser));
-
-  return {
-    success: true,
-    message: `Chào mừng ${currentUser.fullname} (${currentUser.role === "admin" ? "Quản trị viên" : "Khách hàng"})!`,
-  };
+  return { success: true, message: `Chào mừng ${currentUser.fullname}!` };
 }
 
 function logout() {
@@ -139,260 +53,156 @@ function logout() {
   return { success: true, message: "Đã đăng xuất!" };
 }
 
+// ── UI UPDATE ──────────────────────────────────────────────────
 function updateAuthUI() {
   const authButtons = document.getElementById("authButtons");
-  const userInfo = document.getElementById("userInfo");
-
+  const userInfo    = document.getElementById("userInfo");
   if (!authButtons) return;
 
   if (isLoggedIn()) {
     authButtons.classList.add("d-none");
     if (userInfo) {
       userInfo.classList.remove("d-none");
-      const userNameSpan = document.getElementById("userName");
-      if (userNameSpan) {
-        userNameSpan.textContent = currentUser.fullname;
-      }
+      const span = document.getElementById("userName");
+      if (span) span.textContent = currentUser.fullname;
     }
   } else {
     authButtons.classList.remove("d-none");
-    if (userInfo) {
-      userInfo.classList.add("d-none");
-    }
+    userInfo?.classList.add("d-none");
   }
-
-  if (typeof window.updateWarehouseLink === "function") {
-    window.updateWarehouseLink();
-  }
-
+  updateWarehouseLink?.();
   updateAdminButtons();
 }
 
 function updateAdminButtons() {
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  const isAdmin = currentUser && currentUser.role === "admin";
-  document.querySelectorAll(".admin-only").forEach((el) => {
-    if (isAdmin) el.classList.remove("d-none");
-    else el.classList.add("d-none");
-  });
+  const admin = parseJSON(localStorage.getItem("currentUser"), null)?.role === "admin";
+  document.querySelectorAll(".admin-only").forEach((el) =>
+    el.classList.toggle("d-none", !admin)
+  );
 }
 
+// ── MODALS ─────────────────────────────────────────────────────
 function showLoginModal() {
+  const regEl = document.getElementById("registerModal");
+  if (regEl) bootstrap.Modal.getOrCreateInstance(regEl).hide();
   const loginEl = document.getElementById("loginModal");
-  const registerEl = document.getElementById("registerModal");
-
-  if (registerEl) {
-    const registerModal = bootstrap.Modal.getOrCreateInstance(registerEl);
-    registerModal.hide();
-  }
-
-  if (loginEl) {
-    const loginModal = bootstrap.Modal.getOrCreateInstance(loginEl);
-    loginModal.show();
-  }
+  if (loginEl) bootstrap.Modal.getOrCreateInstance(loginEl).show();
 }
 
 function showRegisterModal() {
   const loginEl = document.getElementById("loginModal");
-  const registerEl = document.getElementById("registerModal");
-
-  if (loginEl) {
-    const loginModal = bootstrap.Modal.getOrCreateInstance(loginEl);
-    loginModal.hide();
-  }
-
-  if (registerEl) {
-    const registerModal = bootstrap.Modal.getOrCreateInstance(registerEl);
-    registerModal.show();
-  }
+  if (loginEl) bootstrap.Modal.getOrCreateInstance(loginEl).hide();
+  const regEl = document.getElementById("registerModal");
+  if (regEl) bootstrap.Modal.getOrCreateInstance(regEl).show();
 }
 
 function showMessage(title, message, isError = false) {
-  const modalTitle = document.getElementById("messageModalLabel");
-  const modalBody = document.getElementById("messageModalBody");
-
-  if (modalTitle) modalTitle.textContent = title;
-  if (modalBody) {
-    modalBody.innerHTML = `<div class="alert ${isError ? "alert-danger" : "alert-success"} mb-0">${message}</div>`;
-  }
-
-  const messageModal = createModal("messageModal");
-  if (messageModal) {
-    messageModal.show();
-  } else {
-    alert(message);
-  }
+  const titleEl = document.getElementById("messageModalLabel");
+  const bodyEl  = document.getElementById("messageModalBody");
+  if (titleEl) titleEl.textContent = title;
+  if (bodyEl)  bodyEl.innerHTML = `<div class="alert ${isError ? "alert-danger" : "alert-success"} mb-0">${message}</div>`;
+  const el = document.getElementById("messageModal");
+  if (el) bootstrap.Modal.getOrCreateInstance(el).show();
+  else alert(message);
 }
 
+// ── FORM HANDLERS ──────────────────────────────────────────────
 function handleRegister(e) {
   e.preventDefault();
-
   const fullname = document.getElementById("regFullname").value.trim();
-  const email = document.getElementById("regEmail").value.trim();
+  const email    = document.getElementById("regEmail").value.trim();
   const password = document.getElementById("regPassword").value;
-  const confirmPassword = document.getElementById("regConfirmPassword").value;
-  const role =
-    document.querySelector('input[name="role"]:checked')?.value || "user";
+  const confirm  = document.getElementById("regConfirmPassword").value;
+  const role     = document.querySelector('input[name="role"]:checked')?.value || "user";
+  const code     = document.getElementById("securityCode")?.value.trim() || "";
 
-  const securityCode =
-    document.getElementById("securityCode")?.value.trim() || "";
-
-  if (role === "admin" && securityCode !== "2006") {
-    showMessage(
-      "Lỗi",
-      "Mã bảo mật không chính xác! Chỉ Quản trị viên mới biết mã này.",
-      true,
-    );
-    return;
-  }
-
-  if (!fullname || !email || !password) {
-    showMessage("Lỗi", "Vui lòng nhập đầy đủ thông tin!", true);
-    return;
-  }
-
-  if (password !== confirmPassword) {
-    showMessage("Lỗi", "Mật khẩu xác nhận không khớp!", true);
-    return;
-  }
+  if (!fullname || !email || !password)
+    return showMessage("Lỗi", "Vui lòng nhập đầy đủ thông tin!", true);
+  if (password !== confirm)
+    return showMessage("Lỗi", "Mật khẩu xác nhận không khớp!", true);
+  if (role === "admin" && code !== "2006")
+    return showMessage("Lỗi", "Mã bảo mật không chính xác!", true);
 
   const result = register(email, password, fullname, role);
-
   if (result.success) {
     showMessage("Thành công", result.message);
-    const registerModal = bootstrap.Modal.getOrCreateInstance(
-      document.getElementById("registerModal"),
-    );
-    if (registerModal) {
-      registerModal.hide();
-    }
+    bootstrap.Modal.getOrCreateInstance(document.getElementById("registerModal")).hide();
     document.getElementById("registerForm").reset();
     updateAuthUI();
-  } else {
-    showMessage("Lỗi", result.message, true);
-  }
+  } else showMessage("Lỗi", result.message, true);
 }
 
 function handleLogin(e) {
   e.preventDefault();
-
-  const email = document.getElementById("loginEmail").value.trim();
+  const email    = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
-
-  if (!email || !password) {
-    showMessage("Lỗi", "Vui lòng nhập email và mật khẩu!", true);
-    return;
-  }
+  if (!email || !password)
+    return showMessage("Lỗi", "Vui lòng nhập email và mật khẩu!", true);
 
   const result = login(email, password);
-
   if (result.success) {
     showMessage("Thành công", result.message);
-    const loginModal = getModalInstance("loginModal");
-    if (loginModal) {
-      loginModal.hide();
-    }
+    bootstrap.Modal.getInstance(document.getElementById("loginModal"))?.hide();
     document.getElementById("loginForm").reset();
     updateAuthUI();
-
-    if (window.location.pathname.includes("products.html")) {
-      location.reload();
-    }
-  } else {
-    showMessage("Lỗi", result.message, true);
-  }
+    if (window.location.pathname.includes("products.html")) location.reload();
+  } else showMessage("Lỗi", result.message, true);
 }
 
 function handleLogout() {
-  const result = logout();
-  showMessage("Thành công", result.message);
-  updateAuthUI();
-  if (window.location.pathname.includes("products.html")) {
-    location.reload();
-  }
+  logout();
+  showMessage("Thành công", "Đã đăng xuất!");
+  if (window.location.pathname.includes("products.html")) location.reload();
 }
 
+// ── PROFILE & ORDERS ───────────────────────────────────────────
+window.showProfile = function () {
+  if (!isLoggedIn()) return showLoginModal();
+  const u = parseJSON(localStorage.getItem("currentUser"), {});
+  showMessage("Hồ sơ", `Email: ${u.email}<br>Họ tên: ${u.fullname}<br>Vai trò: ${u.role === "admin" ? "Quản trị viên" : "Khách hàng"}`);
+};
+
+window.showMyOrders = function () {
+  if (!isLoggedIn()) return showLoginModal();
+  window.location.href = "order.html?myorders=1";
+};
+
+// ── INIT ───────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
   updateAuthUI();
-  updateAdminButtons();
 
-  const loginBtn = document.getElementById("loginBtn");
-  const registerBtn = document.getElementById("registerBtn");
-  const logoutBtn = document.getElementById("logoutBtn");
+  document.getElementById("loginBtn")?.addEventListener("click", showLoginModal);
+  document.getElementById("registerBtn")?.addEventListener("click", showRegisterModal);
+  document.getElementById("logoutBtn")?.addEventListener("click", handleLogout);
+  document.getElementById("loginForm")?.addEventListener("submit", handleLogin);
+  document.getElementById("registerForm")?.addEventListener("submit", handleRegister);
 
-  if (loginBtn) loginBtn.addEventListener("click", showLoginModal);
-  if (registerBtn) registerBtn.addEventListener("click", showRegisterModal);
-  if (logoutBtn) logoutBtn.addEventListener("click", handleLogout);
+  // Reset form khi đóng modal
+  document.querySelectorAll(".modal").forEach((m) =>
+    m.addEventListener("hidden.bs.modal", () =>
+      m.querySelectorAll("form").forEach((f) => f.reset())
+    )
+  );
 
-  const loginForm = document.getElementById("loginForm");
-  if (loginForm) loginForm.addEventListener("submit", handleLogin);
-
-  const registerForm = document.getElementById("registerForm");
-  if (registerForm) registerForm.addEventListener("submit", handleRegister);
-
-  const modals = document.querySelectorAll(".modal");
-  modals.forEach((modal) => {
-    modal.addEventListener("hidden.bs.modal", function () {
-      const forms = modal.querySelectorAll("form");
-      forms.forEach((form) => form.reset());
-    });
-  });
+  // Hiện/ẩn ô mã bảo mật theo role
+  document.querySelectorAll('input[name="role"]').forEach((r) =>
+    r.addEventListener("change", function () {
+      const div = document.getElementById("securityCodeDiv");
+      if (!div) return;
+      div.classList.toggle("d-none", this.value !== "admin");
+      if (this.value !== "admin") {
+        const inp = document.getElementById("securityCode");
+        if (inp) inp.value = "";
+      }
+    })
+  );
 });
 
-window.showLoginModal = showLoginModal;
+// ── EXPOSE GLOBALS ─────────────────────────────────────────────
+window.showLoginModal    = showLoginModal;
 window.showRegisterModal = showRegisterModal;
-window.handleLogout = handleLogout;
-window.isLoggedIn = isLoggedIn;
-window.isAdmin = isAdmin;
-window.isUser = isUser;
-window.getCurrentUser = () => currentUser;
-window.showProfile = function () {
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  if (!currentUser) {
-    showLoginModal();
-    return;
-  }
-  alert(
-    `Hồ sơ của bạn:\nEmail: ${currentUser.email}\nHọ tên: ${currentUser.fullname}\nVai trò: ${currentUser.role === "admin" ? "Quản trị viên" : "Khách hàng"}`,
-  );
-};
-window.showMyOrders = function () {
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  if (!currentUser) {
-    showLoginModal();
-    return;
-  }
-  const orders = JSON.parse(localStorage.getItem("orders")) || [];
-  const userOrders = orders.filter((o) => o.userId === currentUser.id);
-  if (!userOrders.length) {
-    alert("Bạn chưa có đơn hàng nào.");
-    return;
-  }
-  let msg = "Đơn hàng của tôi:\n\n";
-  userOrders.forEach((order) => {
-    msg += `Mã: ${order.id}\nSản phẩm: ${order.productName}\nSố lượng: ${order.quantity}\nThành tiền: ${order.totalPrice.toLocaleString()}đ\nTrạng thái: ${order.status}\n\n`;
-  });
-  alert(msg);
-};
-
-function updateAdminLinks() {
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-
-  const adminOrdersLink = document.getElementById("adminOrdersLink");
-  if (adminOrdersLink) {
-    if (currentUser && currentUser.role === "admin") {
-      adminOrdersLink.style.display = "block";
-    } else {
-      adminOrdersLink.style.display = "none";
-    }
-  }
-
-  const adminOrdersNav = document.getElementById("adminOrdersNav");
-  if (adminOrdersNav) {
-    if (currentUser && currentUser.role === "admin") {
-      adminOrdersNav.classList.remove("d-none");
-    } else {
-      adminOrdersNav.classList.add("d-none");
-    }
-  }
-}
+window.handleLogout      = handleLogout;
+window.isLoggedIn        = isLoggedIn;
+window.isAdmin           = isAdmin;
+window.isUser            = isUser;
+window.getCurrentUser    = () => currentUser;

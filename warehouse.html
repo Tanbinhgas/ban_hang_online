@@ -260,10 +260,6 @@
     <script src="assets/js/app.js"></script>
     <script src="assets/js/auth.js"></script>
     <script>
-      function formatPrice(value) {
-        return Number(value).toLocaleString("vi-VN") + "đ";
-      }
-
       function renderWarehouse() {
         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
         const warehouseContent = document.getElementById("warehouseContent");
@@ -344,21 +340,10 @@
         if (modal) modal.hide();
       }
 
-      function updateAdminButtons() {
-        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-        const isAdmin = currentUser && currentUser.role === "admin";
-        document.querySelectorAll(".admin-only").forEach((el) => {
-          if (isAdmin) el.classList.remove("d-none");
-          else el.classList.add("d-none");
-        });
-      }
-
       document.addEventListener("DOMContentLoaded", () => {
         renderWarehouse();
         updateAdminButtons();
-        document
-          .getElementById("saveQuantityBtn")
-          .addEventListener("click", saveQuantity);
+        document.getElementById("saveQuantityBtn").addEventListener("click", saveQuantity);
       });
     </script>
   </body>
