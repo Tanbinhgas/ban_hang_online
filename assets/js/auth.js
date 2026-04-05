@@ -1,13 +1,77 @@
 // auth.js
-let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
-let users = JSON.parse(localStorage.getItem("users")) || [];
+function parseJSON(value, fallback) {
+  try {
+    return value ? JSON.parse(value) : fallback;
+  } catch (error) {
+    console.warn("Lỗi khi parse JSON từ localStorage:", error);
+    return fallback;
+  }
+}
+
+function getModalElement(id) {
+  return document.getElementById(id);
+}
+
+function createModal(id) {
+  const element = getModalElement(id);
+  if (!element) return null;
+  if (window.bootstrap?.Modal) {
+    return new bootstrap.Modal(element);
+  }
+  return {
+    show() {
+      element.classList.add("show");
+      element.style.display = "block";
+      element.removeAttribute("aria-hidden");
+    },
+    hide() {
+      element.classList.remove("show");
+      element.style.display = "none";
+      element.setAttribute("aria-hidden", "true");
+    },
+  };
+}
+
+function getModalInstance(id) {
+  const element = getModalElement(id);
+  if (!element || !window.bootstrap?.Modal) return null;
+  return bootstrap.Modal.getInstance(element);
+}
+
+let currentUser = parseJSON(localStorage.getItem("currentUser"), null);
+let users = parseJSON(localStorage.getItem("users"), []);
+
+const defaultUsers = [
+  {
+    id: "admin-1",
+    email: "admin@example.com",
+    password: "admin123",
+    fullname: "Admin GearHub",
+    role: "admin",
+    coupons: [],
+    createdAt: new Date().toLocaleString("vi-VN"),
+  },
+  {
+    id: "user-1",
+    email: "user@example.com",
+    password: "user123",
+    fullname: "Khách hàng GearHub",
+    role: "user",
+    coupons: [],
+    createdAt: new Date().toLocaleString("vi-VN"),
+  },
+];
+
+if (!users.length) {
+  users = defaultUsers;
+  localStorage.setItem("users", JSON.stringify(users));
+}
 
 // Hàm kiểm tra đăng nhập
 function isLoggedIn() {
   return currentUser !== null;
 }
 
-<<<<<<< HEAD:assets/js/auth.js
 // Hàm kiểm tra Admin
 function isAdmin() {
   return currentUser !== null && currentUser.role === "admin";
@@ -20,10 +84,6 @@ function isUser() {
 
 // Hàm đăng ký
 function register(email, password, fullname, role) {
-=======
-// Hàm đăng ký
-function register(email, password, fullname) {
->>>>>>> dd4619ba652d82732ed9ddb919fb55d4db7aed3a:src/assets/js/auth.js
   // Kiểm tra email đã tồn tại chưa
   const existingUser = users.find((u) => u.email === email);
   if (existingUser) {
@@ -41,15 +101,19 @@ function register(email, password, fullname) {
     email: email,
     password: password,
     fullname: fullname || email.split("@")[0],
-<<<<<<< HEAD:assets/js/auth.js
-    role: role, // "admin" hoặc "user"
-=======
->>>>>>> dd4619ba652d82732ed9ddb919fb55d4db7aed3a:src/assets/js/auth.js
-    createdAt: new Date().toLocaleString("vi-VN"),
+    role: role, // "admin" hoặc "user"    coupons: [], // Mã giảm giá    createdAt: new Date().toLocaleString("vi-VN"),
   };
 
   users.push(newUser);
   localStorage.setItem("users", JSON.stringify(users));
+
+  currentUser = {
+    id: newUser.id,
+    email: newUser.email,
+    fullname: newUser.fullname,
+    role: newUser.role,
+  };
+  localStorage.setItem("currentUser", JSON.stringify(currentUser));
 
   return { success: true, message: "Đăng ký thành công!" };
 }
@@ -66,22 +130,15 @@ function login(email, password) {
     id: user.id,
     email: user.email,
     fullname: user.fullname,
-<<<<<<< HEAD:assets/js/auth.js
     role: user.role,
-=======
->>>>>>> dd4619ba652d82732ed9ddb919fb55d4db7aed3a:src/assets/js/auth.js
   };
 
   localStorage.setItem("currentUser", JSON.stringify(currentUser));
 
-<<<<<<< HEAD:assets/js/auth.js
   return {
     success: true,
     message: `Chào mừng ${currentUser.fullname} (${currentUser.role === "admin" ? "Quản trị viên" : "Khách hàng"})!`,
   };
-=======
-  return { success: true, message: `Chào mừng ${currentUser.fullname}!` };
->>>>>>> dd4619ba652d82732ed9ddb919fb55d4db7aed3a:src/assets/js/auth.js
 }
 
 // Hàm đăng xuất
@@ -114,20 +171,26 @@ function updateAuthUI() {
       userInfo.classList.add("d-none");
     }
   }
+
+  if (typeof window.updateWarehouseLink === "function") {
+    window.updateWarehouseLink();
+  }
 }
 
 // Hàm mở modal đăng nhập
 function showLoginModal() {
-  const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
-  loginModal.show();
+  const loginModal = createModal("loginModal");
+  if (loginModal) {
+    loginModal.show();
+  }
 }
 
 // Hàm mở modal đăng ký
 function showRegisterModal() {
-  const registerModal = new bootstrap.Modal(
-    document.getElementById("registerModal"),
-  );
-  registerModal.show();
+  const registerModal = createModal("registerModal");
+  if (registerModal) {
+    registerModal.show();
+  }
 }
 
 // Hàm mở modal thông báo
@@ -140,10 +203,12 @@ function showMessage(title, message, isError = false) {
     modalBody.innerHTML = `<div class="alert ${isError ? "alert-danger" : "alert-success"} mb-0">${message}</div>`;
   }
 
-  const messageModal = new bootstrap.Modal(
-    document.getElementById("messageModal"),
-  );
-  messageModal.show();
+  const messageModal = createModal("messageModal");
+  if (messageModal) {
+    messageModal.show();
+  } else {
+    alert(message);
+  }
 }
 
 // Xử lý đăng ký
@@ -154,11 +219,8 @@ function handleRegister(e) {
   const email = document.getElementById("regEmail").value.trim();
   const password = document.getElementById("regPassword").value;
   const confirmPassword = document.getElementById("regConfirmPassword").value;
-<<<<<<< HEAD:assets/js/auth.js
   const role =
     document.querySelector('input[name="role"]:checked')?.value || "user";
-=======
->>>>>>> dd4619ba652d82732ed9ddb919fb55d4db7aed3a:src/assets/js/auth.js
 
   if (!fullname || !email || !password) {
     showMessage("Lỗi", "Vui lòng nhập đầy đủ thông tin!", true);
@@ -170,19 +232,16 @@ function handleRegister(e) {
     return;
   }
 
-<<<<<<< HEAD:assets/js/auth.js
   const result = register(email, password, fullname, role);
-=======
-  const result = register(email, password, fullname);
->>>>>>> dd4619ba652d82732ed9ddb919fb55d4db7aed3a:src/assets/js/auth.js
 
   if (result.success) {
     showMessage("Thành công", result.message);
-    const registerModal = bootstrap.Modal.getInstance(
-      document.getElementById("registerModal"),
-    );
-    registerModal.hide();
+    const registerModal = getModalInstance("registerModal");
+    if (registerModal) {
+      registerModal.hide();
+    }
     document.getElementById("registerForm").reset();
+    updateAuthUI();
   } else {
     showMessage("Lỗi", result.message, true);
   }
@@ -204,19 +263,16 @@ function handleLogin(e) {
 
   if (result.success) {
     showMessage("Thành công", result.message);
-    const loginModal = bootstrap.Modal.getInstance(
-      document.getElementById("loginModal"),
-    );
-    loginModal.hide();
+    const loginModal = getModalInstance("loginModal");
+    if (loginModal) {
+      loginModal.hide();
+    }
     document.getElementById("loginForm").reset();
     updateAuthUI();
-<<<<<<< HEAD:assets/js/auth.js
     // Reload lại trang products nếu đang ở đó để cập nhật nút CRUD
     if (window.location.pathname.includes("products.html")) {
       location.reload();
     }
-=======
->>>>>>> dd4619ba652d82732ed9ddb919fb55d4db7aed3a:src/assets/js/auth.js
   } else {
     showMessage("Lỗi", result.message, true);
   }
@@ -227,12 +283,9 @@ function handleLogout() {
   const result = logout();
   showMessage("Thành công", result.message);
   updateAuthUI();
-<<<<<<< HEAD:assets/js/auth.js
   if (window.location.pathname.includes("products.html")) {
     location.reload();
   }
-=======
->>>>>>> dd4619ba652d82732ed9ddb919fb55d4db7aed3a:src/assets/js/auth.js
 }
 
 // Khởi tạo event listeners
@@ -271,9 +324,34 @@ window.showLoginModal = showLoginModal;
 window.showRegisterModal = showRegisterModal;
 window.handleLogout = handleLogout;
 window.isLoggedIn = isLoggedIn;
-<<<<<<< HEAD:assets/js/auth.js
 window.isAdmin = isAdmin;
 window.isUser = isUser;
-=======
->>>>>>> dd4619ba652d82732ed9ddb919fb55d4db7aed3a:src/assets/js/auth.js
 window.getCurrentUser = () => currentUser;
+window.showProfile = function () {
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  if (!currentUser) {
+    showLoginModal();
+    return;
+  }
+  alert(
+    `Hồ sơ của bạn:\nEmail: ${currentUser.email}\nHọ tên: ${currentUser.fullname}\nVai trò: ${currentUser.role === "admin" ? "Quản trị viên" : "Khách hàng"}`,
+  );
+};
+window.showMyOrders = function () {
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  if (!currentUser) {
+    showLoginModal();
+    return;
+  }
+  const orders = JSON.parse(localStorage.getItem("orders")) || [];
+  const userOrders = orders.filter((o) => o.userId === currentUser.id);
+  if (!userOrders.length) {
+    alert("Bạn chưa có đơn hàng nào.");
+    return;
+  }
+  let msg = "Đơn hàng của tôi:\n\n";
+  userOrders.forEach((order) => {
+    msg += `Mã: ${order.id}\nSản phẩm: ${order.productName}\nSố lượng: ${order.quantity}\nThành tiền: ${order.totalPrice.toLocaleString()}đ\nTrạng thái: ${order.status}\n\n`;
+  });
+  alert(msg);
+};

@@ -18,6 +18,18 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="assets/css/style.css" />
+    <style>
+      .coupon-panel {
+        width: 350px;
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in-out;
+        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 1060;
+      }
+      .coupon-panel.show {
+        transform: translateX(0);
+      }
+    </style>
   </head>
   <body>
     <nav
@@ -55,8 +67,10 @@
             <li class="nav-item">
               <a class="nav-link" href="products.html">Catalog</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link active" href="order.html">Đặt hàng</a>
+            <li class="nav-item d-none">
+              <a class="nav-link" id="warehouseLink" href="warehouse.html"
+                >Kho hàng</a
+              >
             </li>
             <li class="nav-item">
               <a class="nav-link" href="about.html">About / Stats</a>
@@ -101,12 +115,12 @@
               </a>
               <ul class="dropdown-menu dropdown-menu-end">
                 <li>
-                  <a class="dropdown-item" href="#"
+                  <a class="dropdown-item" href="#" onclick="showProfile()"
                     ><i class="fas fa-user me-2"></i>Hồ sơ</a
                   >
                 </li>
                 <li>
-                  <a class="dropdown-item" href="#"
+                  <a class="dropdown-item" href="#" onclick="showMyOrders()"
                     ><i class="fas fa-shopping-bag me-2"></i>Đơn hàng của tôi</a
                   >
                 </li>
@@ -137,8 +151,10 @@
                   >Quản lý sản phẩm</a
                 >
               </li>
-              <li class="list-group-item active">
-                <a href="order.html" class="text-decoration-none">Đặt hàng</a>
+              <li class="list-group-item">
+                <a href="warehouse.html" class="text-decoration-none"
+                  >Kho hàng</a
+                >
               </li>
               <li class="list-group-item">
                 <a href="about.html" class="text-decoration-none"
@@ -159,36 +175,86 @@
           <div class="row g-4">
             <div class="col-lg-7">
               <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                  <h5 class="mb-0">Sản phẩm trong giỏ hàng</h5>
+                </div>
                 <div class="card-body">
-                  <form id="orderForm">
-                    <div class="mb-3">
-                      <label for="productSelect" class="form-label"
-                        >Chọn sản phẩm <span class="text-danger">*</span></label
-                      >
-                      <select id="productSelect" class="form-select" required>
-                        <option value="">-- Chọn sản phẩm --</option>
-                      </select>
-                    </div>
+                  <div id="cartItemsContainer">
+                    <p class="text-muted">Đang tải...</p>
+                  </div>
+                  <div id="cartEmptyMessage" class="text-center py-4 d-none">
+                    <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">
+                      Giỏ hàng trống. Vui lòng thêm sản phẩm trước khi thanh
+                      toán.
+                    </p>
+                    <a href="products.html" class="btn btn-primary"
+                      >Xem sản phẩm</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
 
-                    <div class="mb-3">
-                      <label for="orderQuantity" class="form-label"
-                        >Số lượng đặt <span class="text-danger">*</span></label
-                      >
-                      <input
-                        type="number"
-                        id="orderQuantity"
-                        class="form-control"
-                        min="1"
-                        value="1"
-                        required
-                      />
-                    </div>
+            <div class="col-lg-5">
+              <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body">
+                  <h5 class="card-title mb-3">Tóm tắt đơn hàng</h5>
+                  <div class="d-flex justify-content-between mb-2">
+                    <span>Tổng sản phẩm:</span>
+                    <span id="summaryItems">0</span>
+                  </div>
+                  <div class="d-flex justify-content-between mb-2">
+                    <span>Tổng tiền:</span>
+                    <span id="summaryTotal" class="fw-bold text-primary"
+                      >0đ</span
+                    >
+                  </div>
+                  <div
+                    class="d-flex justify-content-between mb-2"
+                    id="discountRow"
+                    style="display: none"
+                  >
+                    <span>Giảm giá:</span>
+                    <span id="discountAmount" class="text-success">-0đ</span>
+                  </div>
+                  <div
+                    class="d-flex justify-content-between mb-2"
+                    id="finalTotalRow"
+                  >
+                    <span><strong>Thành tiền:</strong></span>
+                    <span id="finalTotal" class="fw-bold text-danger">0đ</span>
+                  </div>
+                  <div class="d-flex gap-2 mt-3">
+                    <button
+                      type="button"
+                      class="btn btn-outline-info flex-fill"
+                      id="couponBtn"
+                    >
+                      <i class="fas fa-tags me-1"></i>Mã giảm giá
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-success flex-fill"
+                      id="proceedToPaymentBtn"
+                    >
+                      <i class="fas fa-credit-card me-1"></i>Thanh toán
+                    </button>
+                  </div>
+                </div>
+              </div>
 
+              <!-- Payment Form - Hidden initially -->
+              <div class="card shadow-sm border-0 d-none" id="paymentFormCard">
+                <div class="card-header bg-success text-white">
+                  <h5 class="mb-0">Thông tin thanh toán</h5>
+                </div>
+                <div class="card-body">
+                  <form id="paymentForm">
                     <div class="mb-3">
-                      <label for="customerName" class="form-label"
-                        >Tên khách hàng
-                        <span class="text-danger">*</span></label
-                      >
+                      <label for="customerName" class="form-label">
+                        Tên khách hàng <span class="text-danger">*</span>
+                      </label>
                       <input
                         type="text"
                         id="customerName"
@@ -198,9 +264,9 @@
                     </div>
 
                     <div class="mb-3">
-                      <label for="customerPhone" class="form-label"
-                        >Số điện thoại <span class="text-danger">*</span></label
-                      >
+                      <label for="customerPhone" class="form-label">
+                        Số điện thoại <span class="text-danger">*</span>
+                      </label>
                       <input
                         type="text"
                         id="customerPhone"
@@ -210,10 +276,9 @@
                     </div>
 
                     <div class="mb-3">
-                      <label for="customerAddress" class="form-label"
-                        >Địa chỉ giao hàng
-                        <span class="text-danger">*</span></label
-                      >
+                      <label for="customerAddress" class="form-label">
+                        Địa chỉ giao hàng <span class="text-danger">*</span>
+                      </label>
                       <textarea
                         id="customerAddress"
                         class="form-control"
@@ -223,9 +288,9 @@
                     </div>
 
                     <div class="mb-3">
-                      <label for="shippingMethod" class="form-label"
-                        >Phương thức vận chuyển</label
-                      >
+                      <label for="shippingMethod" class="form-label">
+                        Phương thức vận chuyển
+                      </label>
                       <select id="shippingMethod" class="form-select">
                         <option value="Giao nhanh">
                           Giao nhanh (2-3 ngày)
@@ -236,35 +301,96 @@
                       </select>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">
-                      <i class="fas fa-receipt me-1"></i> Xác nhận đặt hàng
-                    </button>
+                    <div class="mb-3">
+                      <label for="paymentMethod" class="form-label">
+                        Phương thức thanh toán
+                      </label>
+                      <select id="paymentMethod" class="form-select">
+                        <option value="Thanh toán khi nhận hàng">
+                          Thanh toán khi nhận hàng
+                        </option>
+                        <option value="Chuyển khoản ngân hàng">
+                          Chuyển khoản ngân hàng
+                        </option>
+                        <option value="Ví điện tử">
+                          Ví điện tử (Momo, ZaloPay)
+                        </option>
+                      </select>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                      <button type="submit" class="btn btn-primary flex-fill">
+                        <i class="fas fa-check me-1"></i> Xác nhận đặt hàng
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline-secondary"
+                        id="cancelPaymentBtn"
+                      >
+                        Hủy
+                      </button>
+                    </div>
                   </form>
                 </div>
               </div>
-            </div>
 
-            <div class="col-lg-5">
-              <div class="card shadow-sm border-0 mb-4">
-                <div class="card-body">
-                  <h5 class="card-title mb-3">Thông tin sản phẩm</h5>
-                  <p class="mb-2">
-                    <strong>Tên:</strong> <span id="infoTitle">Chưa chọn</span>
-                  </p>
-                  <p class="mb-2">
-                    <strong>Loại:</strong> <span id="infoCategory">-</span>
-                  </p>
-                  <p class="mb-2">
-                    <strong>Giá:</strong> <span id="infoPrice">-</span>
-                  </p>
-                  <p class="mb-2">
-                    <strong>Tồn kho:</strong> <span id="infoStock">-</span>
-                  </p>
-                  <p class="mb-0">
-                    <strong>Trạng thái:</strong> <span id="infoStatus">-</span>
-                  </p>
+              <!-- Coupon Panel - Slides from right -->
+              <div
+                class="coupon-panel position-fixed top-0 end-0 h-100 bg-white shadow-lg border-start"
+                id="couponPanel"
+              >
+                <div class="p-4">
+                  <div
+                    class="d-flex justify-content-between align-items-center mb-4"
+                  >
+                    <h5 class="mb-0">Mã giảm giá</h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      id="closeCouponPanel"
+                    ></button>
+                  </div>
+                  <form id="couponForm">
+                    <div class="mb-3">
+                      <label for="couponCode" class="form-label"
+                        >Nhập mã giảm giá</label
+                      >
+                      <input
+                        type="text"
+                        id="couponCode"
+                        class="form-control"
+                        placeholder="Ví dụ: SAVE10"
+                        required
+                      />
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                      <i class="fas fa-check me-1"></i>Áp dụng mã
+                    </button>
+                  </form>
+                  <div id="couponMessage" class="mt-3"></div>
+                  <div id="appliedCoupon" class="mt-3 d-none">
+                    <div class="alert alert-success">
+                      <strong>Mã đã áp dụng:</strong>
+                      <span id="appliedCode"></span><br />
+                      <small>Giảm <span id="appliedDiscount"></span>%</small>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-danger ms-2"
+                        id="removeCoupon"
+                      >
+                        Xóa
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
+
+              <!-- Overlay for coupon panel -->
+              <div
+                class="coupon-overlay position-fixed top-0 start-0 w-100 h-100 d-none"
+                id="couponOverlay"
+                style="background: rgba(0, 0, 0, 0.5); z-index: 1055"
+              ></div>
 
               <div class="card shadow-sm border-0">
                 <div class="card-body">
@@ -501,55 +627,161 @@
     <script>
       const gears = JSON.parse(localStorage.getItem("gears")) || [];
       let orders = JSON.parse(localStorage.getItem("orders")) || [];
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-      const productSelect = document.getElementById("productSelect");
-      const orderForm = document.getElementById("orderForm");
-
-      const infoTitle = document.getElementById("infoTitle");
-      const infoCategory = document.getElementById("infoCategory");
-      const infoPrice = document.getElementById("infoPrice");
-      const infoStock = document.getElementById("infoStock");
-      const infoStatus = document.getElementById("infoStatus");
+      const cartItemsContainer = document.getElementById("cartItemsContainer");
+      const cartEmptyMessage = document.getElementById("cartEmptyMessage");
+      const summaryItems = document.getElementById("summaryItems");
+      const summaryTotal = document.getElementById("summaryTotal");
+      const proceedToPaymentBtn = document.getElementById(
+        "proceedToPaymentBtn",
+      );
+      const paymentFormCard = document.getElementById("paymentFormCard");
+      const paymentForm = document.getElementById("paymentForm");
+      const cancelPaymentBtn = document.getElementById("cancelPaymentBtn");
       const latestOrder = document.getElementById("latestOrder");
 
-      function loadProductsToSelect() {
-        productSelect.innerHTML =
-          '<option value="">-- Chọn sản phẩm --</option>';
+      // Coupon elements
+      const couponBtn = document.getElementById("couponBtn");
+      const couponPanel = document.getElementById("couponPanel");
+      const couponOverlay = document.getElementById("couponOverlay");
+      const closeCouponPanel = document.getElementById("closeCouponPanel");
+      const couponForm = document.getElementById("couponForm");
+      const couponMessage = document.getElementById("couponMessage");
+      const appliedCoupon = document.getElementById("appliedCoupon");
+      const appliedCode = document.getElementById("appliedCode");
+      const appliedDiscount = document.getElementById("appliedDiscount");
+      const removeCoupon = document.getElementById("removeCoupon");
+      const discountRow = document.getElementById("discountRow");
+      const discountAmount = document.getElementById("discountAmount");
+      const finalTotalRow = document.getElementById("finalTotalRow");
+      const finalTotal = document.getElementById("finalTotal");
 
-        if (!gears.length) return;
+      let appliedCouponData = null;
 
-        gears.forEach((gear) => {
-          const option = document.createElement("option");
-          option.value = gear.id;
-          option.textContent = `${gear.title} - ${Number(gear.price).toLocaleString("vi-VN")}đ (còn ${gear.quantity})`;
-          productSelect.appendChild(option);
-        });
-      }
+      // Check if this is a checkout from cart
+      const urlParams = new URLSearchParams(window.location.search);
+      const isCheckout = urlParams.get("checkout") === "1";
 
-      function getSelectedProduct() {
-        const selectedId = productSelect.value;
-        return gears.find((g) => g.id === selectedId);
-      }
-
-      function renderProductInfo() {
-        const product = getSelectedProduct();
-
-        if (!product) {
-          infoTitle.textContent = "Chưa chọn";
-          infoCategory.textContent = "-";
-          infoPrice.textContent = "-";
-          infoStock.textContent = "-";
-          infoStatus.textContent = "-";
+      function loadCartItems() {
+        if (!cart.length) {
+          cartItemsContainer.innerHTML = "";
+          cartEmptyMessage.classList.remove("d-none");
+          summaryItems.textContent = "0";
+          summaryTotal.textContent = "0đ";
+          proceedToPaymentBtn.disabled = true;
+          couponBtn.disabled = true;
           return;
         }
 
-        infoTitle.textContent = product.title;
-        infoCategory.textContent = product.category;
-        infoPrice.textContent =
-          Number(product.price).toLocaleString("vi-VN") + "₫";
-        infoStock.textContent = product.quantity;
-        infoStatus.textContent =
-          Number(product.quantity) > 0 ? "Còn hàng" : "Hết hàng";
+        cartEmptyMessage.classList.add("d-none");
+        proceedToPaymentBtn.disabled = false;
+        couponBtn.disabled = false;
+
+        cartItemsContainer.innerHTML = cart
+          .map((item, index) => {
+            const gear = gears.find((g) => g.id === item.id);
+            if (!gear) return "";
+
+            return `
+              <div class="d-flex align-items-center justify-content-between border-bottom py-3">
+                <div class="d-flex align-items-center gap-3">
+                  <img src="${item.image}" alt="${item.title}" class="rounded" style="width:60px; height:60px; object-fit:contain; background:#fff;">
+                  <div>
+                    <h6 class="mb-1">${item.title}</h6>
+                    <p class="mb-1 text-muted small">${item.category}</p>
+                    <p class="mb-0">${formatPrice(item.price)} x ${item.quantity} = <strong>${formatPrice(item.price * item.quantity)}</strong></p>
+                  </div>
+                </div>
+                <div class="text-end">
+                  <small class="text-muted">SL: ${item.quantity}</small>
+                  <button class="btn btn-sm btn-outline-danger ms-2" onclick="removeCartItem('${item.id}')">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+            `;
+          })
+          .join("");
+
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const totalPrice = cart.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0,
+        );
+
+        summaryItems.textContent = totalItems;
+        summaryTotal.textContent = formatPrice(totalPrice);
+        updateFinalTotal(totalPrice);
+      }
+
+      function formatPrice(value) {
+        return Number(value).toLocaleString("vi-VN") + "đ";
+      }
+
+      function updateFinalTotal(totalPrice) {
+        if (appliedCouponData) {
+          const discount = totalPrice * (appliedCouponData.discount / 100);
+          const final = totalPrice - discount;
+          discountRow.style.display = "flex";
+          discountAmount.textContent = "-" + formatPrice(discount);
+          finalTotal.textContent = formatPrice(final);
+        } else {
+          discountRow.style.display = "none";
+          finalTotal.textContent = formatPrice(totalPrice);
+        }
+      }
+
+      function applyCoupon(code) {
+        const coupons = JSON.parse(localStorage.getItem("coupons")) || [];
+        const coupon = coupons.find(
+          (c) => c.code === code && new Date(c.expiry) > new Date(),
+        );
+
+        if (!coupon) {
+          couponMessage.innerHTML =
+            '<div class="alert alert-danger">Mã giảm giá không hợp lệ hoặc đã hết hạn.</div>';
+          return;
+        }
+
+        // Check if user has this coupon
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        if (
+          !currentUser ||
+          !currentUser.coupons ||
+          !currentUser.coupons.includes(code)
+        ) {
+          couponMessage.innerHTML =
+            '<div class="alert alert-danger">Bạn không có mã giảm giá này.</div>';
+          return;
+        }
+
+        appliedCouponData = coupon;
+        appliedCode.textContent = coupon.code;
+        appliedDiscount.textContent = coupon.discount;
+        appliedCoupon.classList.remove("d-none");
+        couponMessage.innerHTML =
+          '<div class="alert alert-success">Mã giảm giá đã được áp dụng!</div>';
+
+        const totalPrice = cart.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0,
+        );
+        updateFinalTotal(totalPrice);
+
+        setTimeout(() => {
+          closeCoupon();
+        }, 1500);
+      }
+
+      function showPaymentForm() {
+        paymentFormCard.classList.remove("d-none");
+        proceedToPaymentBtn.classList.add("d-none");
+      }
+
+      function hidePaymentForm() {
+        paymentFormCard.classList.add("d-none");
+        proceedToPaymentBtn.classList.remove("d-none");
       }
 
       function renderLatestOrder() {
@@ -561,31 +793,65 @@
 
         const last = orders[orders.length - 1];
         latestOrder.innerHTML = `
-        <p class="mb-2"><strong>Mã đơn:</strong> ${last.id}</p>
-        <p class="mb-2"><strong>Sản phẩm:</strong> ${last.productName}</p>
-        <p class="mb-2"><strong>Số lượng:</strong> ${last.quantity}</p>
-        <p class="mb-2"><strong>Khách hàng:</strong> ${last.customerName}</p>
-        <p class="mb-2"><strong>Địa chỉ:</strong> ${last.address}</p>
-        <p class="mb-0"><strong>Trạng thái:</strong> ${last.status}</p>
-      `;
+          <p class="mb-2"><strong>Mã đơn:</strong> ${last.id}</p>
+          <p class="mb-2"><strong>Sản phẩm:</strong> ${last.productName}</p>
+          <p class="mb-2"><strong>Số lượng:</strong> ${last.quantity}</p>
+          <p class="mb-2"><strong>Khách hàng:</strong> ${last.customerName}</p>
+          <p class="mb-2"><strong>Địa chỉ:</strong> ${last.address}</p>
+          <p class="mb-0"><strong>Trạng thái:</strong> ${last.status}</p>
+        `;
       }
 
-      productSelect.addEventListener("change", renderProductInfo);
+      proceedToPaymentBtn.addEventListener("click", showPaymentForm);
+      cancelPaymentBtn.addEventListener("click", hidePaymentForm);
 
-      orderForm.addEventListener("submit", function (e) {
+      // Coupon events
+      couponBtn.addEventListener("click", () => {
+        console.log("Coupon button clicked");
+        couponPanel.classList.add("show");
+        couponOverlay.classList.remove("d-none");
+        console.log("Panel classes:", couponPanel.classList);
+      });
+
+      const closeCoupon = () => {
+        couponPanel.classList.remove("show");
+        couponOverlay.classList.add("d-none");
+      };
+
+      closeCouponPanel.addEventListener("click", closeCoupon);
+      couponOverlay.addEventListener("click", closeCoupon);
+
+      couponForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const code = document
+          .getElementById("couponCode")
+          .value.trim()
+          .toUpperCase();
+        applyCoupon(code);
+      });
+
+      removeCoupon.addEventListener("click", () => {
+        appliedCouponData = null;
+        appliedCoupon.classList.add("d-none");
+        couponMessage.innerHTML = "";
+        const totalPrice = cart.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0,
+        );
+        updateFinalTotal(totalPrice);
+      });
+
+      paymentForm.addEventListener("submit", function (e) {
         e.preventDefault();
 
-        // ===== KIỂM TRA ĐĂNG NHẬP =====
+        // Check login
         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
         if (!currentUser) {
           alert("Vui lòng đăng nhập để đặt hàng!");
           showLoginModal();
           return;
         }
-        // ===== KẾT THÚC KIỂM TRA =====
 
-        const product = getSelectedProduct();
-        const qty = Number(document.getElementById("orderQuantity").value);
         const customerName = document
           .getElementById("customerName")
           .value.trim();
@@ -596,59 +862,83 @@
           .getElementById("customerAddress")
           .value.trim();
         const shippingMethod = document.getElementById("shippingMethod").value;
-
-        if (!product) {
-          alert("Vui lòng chọn sản phẩm.");
-          return;
-        }
-
-        if (qty <= 0) {
-          alert("Số lượng đặt phải lớn hơn 0.");
-          return;
-        }
-
-        if (product.quantity < qty) {
-          alert(
-            `Sản phẩm không đủ hàng. Chỉ còn ${product.quantity} sản phẩm.`,
-          );
-          return;
-        }
+        const paymentMethod = document.getElementById("paymentMethod").value;
 
         if (!customerName || !customerPhone || !customerAddress) {
           alert("Vui lòng nhập đầy đủ thông tin đơn hàng.");
           return;
         }
 
-        product.quantity -= qty;
+        // Validate stock for all items
+        for (const item of cart) {
+          const gear = gears.find((g) => g.id === item.id);
+          if (!gear || gear.quantity < item.quantity) {
+            alert(
+              `Sản phẩm "${item.title}" không đủ hàng. Chỉ còn ${gear ? gear.quantity : 0} sản phẩm.`,
+            );
+            return;
+          }
+        }
+
+        // Create orders for each cart item
+        const orderIds = [];
+        let totalOrderPrice = 0;
+        for (const item of cart) {
+          const gear = gears.find((g) => g.id === item.id);
+          gear.quantity -= item.quantity;
+
+          const itemTotal = item.price * item.quantity;
+          totalOrderPrice += itemTotal;
+
+          const order = {
+            id: "DH" + Date.now() + Math.random().toString(36).substr(2, 5),
+            productId: item.id,
+            productName: item.title,
+            quantity: item.quantity,
+            totalPrice: itemTotal,
+            customerName,
+            phone: customerPhone,
+            address: customerAddress,
+            shippingMethod,
+            paymentMethod,
+            couponCode: appliedCouponData ? appliedCouponData.code : null,
+            status: "Đang xử lý",
+            createdAt: new Date().toLocaleString("vi-VN"),
+            userId: currentUser.id,
+            userEmail: currentUser.email,
+          };
+
+          orders.push(order);
+          orderIds.push(order.id);
+        }
+
+        // Apply discount if any
+        let finalPrice = totalOrderPrice;
+        if (appliedCouponData) {
+          finalPrice = totalOrderPrice * (1 - appliedCouponData.discount / 100);
+        }
+
         localStorage.setItem("gears", JSON.stringify(gears));
-
-        const order = {
-          id: "DH" + Date.now(),
-          productId: product.id,
-          productName: product.title,
-          quantity: qty,
-          totalPrice: product.price * qty,
-          customerName,
-          phone: customerPhone,
-          address: customerAddress,
-          shippingMethod,
-          status: "Đang xử lý",
-          createdAt: new Date().toLocaleString("vi-VN"),
-          userId: currentUser.id,
-          userEmail: currentUser.email,
-        };
-
-        orders.push(order);
         localStorage.setItem("orders", JSON.stringify(orders));
+        localStorage.removeItem("cart");
 
         alert(
-          `Đặt hàng thành công!\nMã đơn: ${order.id}\nTổng tiền: ${order.totalPrice.toLocaleString("vi-VN")}đ`,
+          `Đặt hàng thành công!\nMã đơn: ${orderIds.join(", ")}\nThành tiền: ${formatPrice(finalPrice)}`,
         );
-        orderForm.reset();
-        renderProductInfo();
+
+        paymentForm.reset();
+        hidePaymentForm();
+        loadCartItems();
         renderLatestOrder();
-        loadProductsToSelect();
+        updateCartCount();
       });
+
+      function removeCartItem(id) {
+        cart = cart.filter((item) => item.id !== id);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        loadCartItems();
+        updateCartCount();
+      }
 
       function updateCartCount() {
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -659,26 +949,16 @@
         }
       }
 
-      loadProductsToSelect();
-      renderProductInfo();
+      // Only load cart if this is checkout mode
+      if (isCheckout) {
+        loadCartItems();
+      } else {
+        // Fallback for old order form - redirect to products
+        window.location.href = "products.html";
+      }
+
       renderLatestOrder();
       updateCartCount();
-
-      document.getElementById("cartBtn")?.addEventListener("click", (e) => {
-        e.preventDefault();
-        const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        if (cart.length === 0) {
-          alert("Giỏ hàng trống!");
-        } else {
-          let msg = "Giỏ hàng:\n";
-          cart.forEach((item) => {
-            msg += `- ${item.title}: ${item.quantity} x ${item.price.toLocaleString("vi-VN")}đ\n`;
-          });
-          const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
-          msg += `\nTổng: ${total.toLocaleString("vi-VN")}đ`;
-          alert(msg);
-        }
-      });
     </script>
 
     <script src="assets/js/app.js"></script>

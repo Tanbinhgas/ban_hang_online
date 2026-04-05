@@ -56,8 +56,10 @@
             <li class="nav-item">
               <a class="nav-link" href="about.html">About / Stats</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="order.html">Đặt hàng</a>
+            <li class="nav-item d-none">
+              <a class="nav-link" id="warehouseLink" href="warehouse.html"
+                >Kho hàng</a
+              >
             </li>
           </ul>
 
@@ -99,12 +101,20 @@
               </a>
               <ul class="dropdown-menu dropdown-menu-end">
                 <li>
-                  <a class="dropdown-item" href="#" id="profileBtn"
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    id="profileBtn"
+                    onclick="showProfile()"
                     ><i class="fas fa-user me-2"></i>Hồ sơ</a
                   >
                 </li>
                 <li>
-                  <a class="dropdown-item" href="#" id="myOrdersBtn"
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    id="myOrdersBtn"
+                    onclick="showMyOrders()"
                     ><i class="fas fa-shopping-bag me-2"></i>Đơn hàng của tôi</a
                   >
                 </li>
@@ -167,6 +177,30 @@
                   >Loa + Mic</a
                 >
               </li>
+              <li class="list-group-item">
+                <a
+                  href="#"
+                  class="text-decoration-none category-link"
+                  data-category="Màn hình"
+                  >Màn hình</a
+                >
+              </li>
+              <li class="list-group-item">
+                <a
+                  href="#"
+                  class="text-decoration-none category-link"
+                  data-category="Laptop"
+                  >Laptop</a
+                >
+              </li>
+              <li class="list-group-item">
+                <a
+                  href="#"
+                  class="text-decoration-none category-link"
+                  data-category="PC"
+                  >PC</a
+                >
+              </li>
             </ul>
           </div>
         </nav>
@@ -184,6 +218,14 @@
                 id="addGearBtn"
               >
                 <i class="fas fa-plus me-1"></i> Thêm sản phẩm
+              </button>
+              <button
+                class="btn btn-outline-warning me-2 admin-only"
+                data-bs-toggle="modal"
+                data-bs-target="#couponModal"
+                id="manageCouponsBtn"
+              >
+                <i class="fas fa-tags me-1"></i> Quản lý mã giảm giá
               </button>
               <button
                 class="btn btn-outline-danger admin-only"
@@ -210,6 +252,9 @@
                 <option value="Bàn phím">Bàn phím</option>
                 <option value="Tai nghe">Tai nghe</option>
                 <option value="Loa/Mic">Loa/Mic</option>
+                <option value="Màn hình">Màn hình</option>
+                <option value="Laptop">Laptop</option>
+                <option value="PC">PC</option>
               </select>
             </div>
             <div class="col-md-4">
@@ -257,6 +302,9 @@
                     <option value="Bàn phím">Bàn phím</option>
                     <option value="Tai nghe">Tai nghe</option>
                     <option value="Loa/Mic">Loa/Mic</option>
+                    <option value="Màn hình">Màn hình</option>
+                    <option value="Laptop">Laptop</option>
+                    <option value="PC">PC</option>
                   </select>
                 </div>
                 <div class="col-md-6 mb-3">
@@ -318,6 +366,154 @@
               Đóng</button
             ><button type="button" class="btn btn-primary" id="saveGearBtn">
               Lưu
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Coupon Modal -->
+    <div class="modal fade" id="couponModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="couponModalLabel">
+              Quản lý mã giảm giá
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-4">
+              <button
+                class="btn btn-success mb-3"
+                data-bs-toggle="collapse"
+                data-bs-target="#createCouponForm"
+              >
+                <i class="fas fa-plus me-1"></i>Tạo mã giảm giá mới
+              </button>
+              <div class="collapse" id="createCouponForm">
+                <div class="card card-body">
+                  <form id="couponForm">
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label for="couponCode" class="form-label"
+                          >Mã giảm giá *</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="couponCode"
+                          placeholder="Ví dụ: SAVE10"
+                          required
+                        />
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <label for="couponDiscount" class="form-label"
+                          >Phần trăm giảm (%)*</label
+                        >
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="couponDiscount"
+                          min="1"
+                          max="100"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="couponExpiry" class="form-label"
+                        >Ngày hết hạn *</label
+                      >
+                      <input
+                        type="date"
+                        class="form-control"
+                        id="couponExpiry"
+                        required
+                      />
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Gửi mã cho:</label>
+                      <div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="sendTo"
+                            id="sendAll"
+                            value="all"
+                            checked
+                          />
+                          <label class="form-check-label" for="sendAll"
+                            >Tất cả user</label
+                          >
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="sendTo"
+                            id="sendSpecific"
+                            value="specific"
+                          />
+                          <label class="form-check-label" for="sendSpecific"
+                            >User cụ thể</label
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <div class="mb-3 d-none" id="userSelectDiv">
+                      <label for="userSearch" class="form-label"
+                        >Tìm và chọn user:</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="userSearch"
+                        placeholder="Nhập email hoặc tên để tìm user..."
+                        list="userList"
+                        autocomplete="off"
+                      />
+                      <datalist id="userList"></datalist>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                      <i class="fas fa-save me-1"></i>Tạo và gửi mã
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <h6>Danh sách mã giảm giá</h6>
+            <div id="couponsList" class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Mã</th>
+                    <th>Giảm (%)</th>
+                    <th>Hết hạn</th>
+                    <th>Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody id="couponsTableBody">
+                  <tr>
+                    <td colspan="4" class="text-center">Đang tải...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Đóng
             </button>
           </div>
         </div>
@@ -568,27 +764,144 @@
     <script src="assets/js/app.js"></script>
     <script src="assets/js/auth.js"></script>
     <script>
-      function updateCartCount() {
-        const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        const cartCount = document.getElementById("cartCount");
-        if (cartCount)
-          cartCount.textContent = cart.reduce((s, i) => s + i.quantity, 0);
-      }
-      updateCartCount();
-      document.getElementById("cartBtn")?.addEventListener("click", (e) => {
-        e.preventDefault();
-        const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        if (cart.length === 0) alert("Giỏ hàng trống!");
-        else {
-          let msg = "Giỏ hàng:\n";
-          cart.forEach(
-            (i) =>
-              (msg += `- ${i.title}: ${i.quantity} x ${i.price.toLocaleString("vi-VN")}đ\n`),
-          );
-          msg += `\nTổng: ${cart.reduce((s, i) => s + i.price * i.quantity, 0).toLocaleString("vi-VN")}đ`;
-          alert(msg);
+      // Coupon management
+      let coupons = JSON.parse(localStorage.getItem("coupons")) || [];
+
+      function loadCoupons() {
+        const tbody = document.getElementById("couponsTableBody");
+        if (!coupons.length) {
+          tbody.innerHTML =
+            '<tr><td colspan="4" class="text-center">Chưa có mã giảm giá nào.</td></tr>';
+          return;
         }
+
+        tbody.innerHTML = coupons
+          .map(
+            (coupon) => `
+          <tr>
+            <td>${coupon.code}</td>
+            <td>${coupon.discount}%</td>
+            <td>${new Date(coupon.expiry).toLocaleDateString("vi-VN")}</td>
+            <td>
+              <button class="btn btn-sm btn-danger" onclick="deleteCoupon('${coupon.code}')">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        `,
+          )
+          .join("");
+      }
+
+      function loadUsers() {
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        const datalist = document.getElementById("userList");
+        datalist.innerHTML = "";
+        users
+          .filter((u) => u.role === "user")
+          .forEach((user) => {
+            const option = document.createElement("option");
+            option.value = user.email; // Use email as value for search
+            option.setAttribute("data-user-id", user.id);
+            datalist.appendChild(option);
+          });
+      }
+
+      document
+        .getElementById("couponForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const code = document
+            .getElementById("couponCode")
+            .value.trim()
+            .toUpperCase();
+          const discount = Number(
+            document.getElementById("couponDiscount").value,
+          );
+          const expiry = document.getElementById("couponExpiry").value;
+          const sendTo = document.querySelector(
+            'input[name="sendTo"]:checked',
+          ).value;
+
+          if (coupons.find((c) => c.code === code)) {
+            alert("Mã giảm giá đã tồn tại!");
+            return;
+          }
+
+          const coupon = {
+            code,
+            discount,
+            expiry,
+            createdAt: new Date().toISOString(),
+          };
+
+          coupons.push(coupon);
+          localStorage.setItem("coupons", JSON.stringify(coupons));
+
+          // Send to users
+          const users = JSON.parse(localStorage.getItem("users")) || [];
+          if (sendTo === "all") {
+            users
+              .filter((u) => u.role === "user")
+              .forEach((user) => {
+                if (!user.coupons) user.coupons = [];
+                if (!user.coupons.includes(code)) user.coupons.push(code);
+              });
+          } else {
+            const userEmail = document
+              .getElementById("userSearch")
+              .value.trim();
+            const user = users.find(
+              (u) => u.email === userEmail && u.role === "user",
+            );
+            if (user) {
+              if (!user.coupons) user.coupons = [];
+              if (!user.coupons.includes(code)) user.coupons.push(code);
+            } else {
+              alert("Không tìm thấy user với email này!");
+              return;
+            }
+          }
+
+          localStorage.setItem("users", JSON.stringify(users));
+
+          alert("Mã giảm giá đã được tạo và gửi!");
+          document.getElementById("couponForm").reset();
+          loadCoupons();
+          bootstrap.Collapse.getInstance(
+            document.getElementById("createCouponForm"),
+          ).hide();
+        });
+
+      function deleteCoupon(code) {
+        if (!confirm("Xóa mã giảm giá này?")) return;
+        coupons = coupons.filter((c) => c.code !== code);
+        localStorage.setItem("coupons", JSON.stringify(coupons));
+
+        // Remove from users
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        users.forEach((user) => {
+          if (user.coupons) {
+            user.coupons = user.coupons.filter((c) => c !== code);
+          }
+        });
+        localStorage.setItem("users", JSON.stringify(users));
+
+        loadCoupons();
+      }
+
+      document.querySelectorAll('input[name="sendTo"]').forEach((radio) => {
+        radio.addEventListener("change", function () {
+          const div = document.getElementById("userSelectDiv");
+          div.classList.toggle("d-none", this.value === "all");
+          if (this.value === "specific") loadUsers();
+        });
       });
+
+      document
+        .getElementById("couponModal")
+        .addEventListener("show.bs.modal", loadCoupons);
 
       function showProfile() {
         const user = JSON.parse(localStorage.getItem("currentUser"));
@@ -600,6 +913,7 @@
           <table class="table table-borderless"><tr><th>Họ tên:</th><td>${user.fullname}</td></tr>
           <tr><th>Email:</th><td>${user.email}</td></tr>
           <tr><th>Vai trò:</th><td><span class="badge ${user.role === "admin" ? "bg-danger" : "bg-primary"}">${user.role === "admin" ? "Quản trị viên" : "Khách hàng"}</span></td></tr>
+          <tr><th>Mã giảm giá:</th><td>${full?.coupons?.length ? full.coupons.join(", ") : "Chưa có"}</td></tr>
           <tr><th>Ngày tạo:</th><td>${full?.createdAt || "Không rõ"}</td></tr>
           <tr><th>ID:</th><td><small>${user.id}</small></td></tr></table>
         `;

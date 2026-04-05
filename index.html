@@ -35,11 +35,12 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarContent">
-          <form class="d-flex mx-auto my-2 my-lg-0 w-50">
+          <form class="d-flex mx-auto my-2 my-lg-0 w-50" id="homeSearchForm">
             <input
+              id="searchInputHome"
               class="form-control me-2 rounded-pill"
               type="search"
-              placeholder="Tìm gear... (Razer, Logitech, bàn phím cơ...)"
+              placeholder="Tìm gear... (Razer, Logitech, bàn phím cơ, màn hình, PC, laptop...)"
               aria-label="Search"
             />
             <button class="btn btn-outline-light rounded-pill" type="submit">
@@ -58,7 +59,12 @@
               <a class="nav-link" href="about.html">About / Stats</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="order.html">Đặt hàng</a>
+              <a
+                class="nav-link d-none"
+                id="warehouseLink"
+                href="warehouse.html"
+                >Kho hàng</a
+              >
             </li>
           </ul>
 
@@ -100,12 +106,12 @@
               </a>
               <ul class="dropdown-menu dropdown-menu-end">
                 <li>
-                  <a class="dropdown-item" href="#"
+                  <a class="dropdown-item" href="#" onclick="showProfile()"
                     ><i class="fas fa-user me-2"></i>Hồ sơ</a
                   >
                 </li>
                 <li>
-                  <a class="dropdown-item" href="#"
+                  <a class="dropdown-item" href="#" onclick="showMyOrders()"
                     ><i class="fas fa-shopping-bag me-2"></i>Đơn hàng của tôi</a
                   >
                 </li>
@@ -225,7 +231,7 @@
                 >
                   <h3>Razer Viper V3 Pro Mouse</h3>
                   <p>Siêu nhẹ 54g, sensor 35K DPI - Giá: 15.900.000đ</p>
-                  <a href="products.html" class="btn btn-danger"
+                  <a href="product-detail.html?id=1" class="btn btn-danger"
                     >Xem chi tiết</a
                   >
                 </div>
@@ -583,15 +589,55 @@
           col.innerHTML = `
             <div class="card h-100 shadow-sm border-0">
               <img src="${gear.image}" class="card-img-top" alt="${gear.title}" style="height: 180px; object-fit: contain; background:#fff;">
-              <div class="card-body text-center">
+              <div class="card-body text-center d-flex flex-column">
                 <h6 class="card-title text-dark fw-bold">${gear.title}</h6>
                 <p class="text-danger fw-bold fs-5 mb-2">${Number(gear.price).toLocaleString("vi-VN")}đ</p>
-                <span class="badge ${gear.quantity > 0 ? "bg-success" : "bg-danger"} fs-6 px-3 py-2">${gear.quantity > 0 ? "Còn hàng" : "Hết hàng"}</span>
+                <p class="small text-muted flex-grow-1">${gear.description ? gear.description.substring(0, 60) + (gear.description.length > 60 ? "..." : "") : ""}</p>
+                <div class="mt-3">
+                  ${
+                    gear.quantity > 0
+                      ? `<button class="btn btn-success btn-sm w-100" onclick="buyNow('${gear.id}')">Mua ngay</button>`
+                      : `<span class="badge bg-danger fs-6 px-3 py-2">Hết hàng</span>`
+                  }
+                </div>
               </div>
             </div>
           `;
           featuredContainer.appendChild(col);
         });
+      }
+
+      function buyNow(id) {
+        if (!isLoggedIn()) {
+          showLoginModal();
+          return;
+        }
+        const gears = JSON.parse(localStorage.getItem("gears")) || [];
+        const gear = gears.find((g) => g.id === id);
+        if (!gear || gear.quantity <= 0) {
+          return alert("Sản phẩm không thể mua. Hết hàng.");
+        }
+
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const existing = cart.find((item) => item.id === id);
+        if (existing) {
+          if (existing.quantity + 1 > gear.quantity)
+            return alert(`Chỉ còn ${gear.quantity} sản phẩm!`);
+          existing.quantity += 1;
+        } else {
+          cart.push({
+            id: gear.id,
+            title: gear.title,
+            price: gear.price,
+            image: gear.image,
+            category: gear.category,
+            quantity: 1,
+          });
+        }
+
+        localStorage.setItem("cart", JSON.stringify(cart));
+        updateCartCount();
+        window.location.href = "order.html?checkout=1";
       }
 
       function updateCartCount() {
@@ -600,6 +646,19 @@
         if (cartCount) {
           const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
           cartCount.textContent = totalItems;
+        }
+      }
+
+      function updateWarehouseLink() {
+        const warehouseLink = document.getElementById("warehouseLink");
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        if (!warehouseLink) return;
+        const navItem = warehouseLink.closest(".nav-item");
+        if (!navItem) return;
+        if (currentUser && currentUser.role === "admin") {
+          navItem.classList.remove("d-none");
+        } else {
+          navItem.classList.add("d-none");
         }
       }
 
@@ -613,24 +672,24 @@
         });
       });
 
+      function showProfile() {
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        if (!currentUser) {
+          showLoginModal();
+          return;
+        }
+        alert(
+          `Hồ sơ của bạn:\nEmail: ${currentUser.email}\nHọ tên: ${currentUser.fullname}\nVai trò: ${currentUser.role === "admin" ? "Quản trị viên" : "Khách hàng"}`,
+        );
+      }
+
+      function showMyOrders() {
+        window.location.href = "order.html?myorders=1";
+      }
+
       loadFeaturedProducts();
       updateCartCount();
-
-      document.getElementById("cartBtn")?.addEventListener("click", (e) => {
-        e.preventDefault();
-        const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        if (cart.length === 0) {
-          alert("Giỏ hàng trống!");
-        } else {
-          let msg = "Giỏ hàng:\n";
-          cart.forEach((item) => {
-            msg += `- ${item.title}: ${item.quantity} x ${item.price.toLocaleString("vi-VN")}đ\n`;
-          });
-          const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
-          msg += `\nTổng: ${total.toLocaleString("vi-VN")}đ`;
-          alert(msg);
-        }
-      });
+      updateWarehouseLink();
     </script>
   </body>
 </html>

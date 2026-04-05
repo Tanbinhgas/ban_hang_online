@@ -65,8 +65,10 @@
                 >About / Stats</a
               >
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="order.html">Đặt hàng</a>
+            <li class="nav-item d-none">
+              <a class="nav-link" id="warehouseLink" href="warehouse.html"
+                >Kho hàng</a
+              >
             </li>
           </ul>
 
@@ -108,12 +110,12 @@
               </a>
               <ul class="dropdown-menu dropdown-menu-end">
                 <li>
-                  <a class="dropdown-item" href="#"
+                  <a class="dropdown-item" href="#" onclick="showProfile()"
                     ><i class="fas fa-user me-2"></i>Hồ sơ</a
                   >
                 </li>
                 <li>
-                  <a class="dropdown-item" href="#"
+                  <a class="dropdown-item" href="#" onclick="showMyOrders()"
                     ><i class="fas fa-shopping-bag me-2"></i>Đơn hàng của tôi</a
                   >
                 </li>
@@ -174,9 +176,10 @@
               <h3>Giới thiệu dự án</h3>
               <p>
                 GearHub là website quản lý danh sách gear gaming (chuột, bàn
-                phím, tai nghe, loa + mic...), hỗ trợ đầy đủ CRUD, tìm kiếm,
-                lọc, sắp xếp và lưu trữ LocalStorage. Dự án được xây dựng bởi
-                nhóm 5 sinh viên Đại học CMC cho môn Cơ sở Lập trình Web.
+                phím, tai nghe, loa + mic, màn hình, laptop, PC...), hỗ trợ đầy
+                đủ CRUD, tìm kiếm, lọc, sắp xếp và lưu trữ LocalStorage. Dự án
+                được xây dựng bởi nhóm 5 sinh viên Đại học CMC cho môn Cơ sở Lập
+                trình Web.
               </p>
               <ul class="list-unstyled">
                 <li>
@@ -523,12 +526,21 @@
       document.getElementById("outOfStock").textContent = outOfStockCount;
       document.getElementById("percentInStock").textContent = `(${percent}%)`;
 
-      const categoryCount = {
-        Chuột: gears.filter((g) => g.category === "Chuột").length,
-        "Bàn phím": gears.filter((g) => g.category === "Bàn phím").length,
-        "Tai nghe": gears.filter((g) => g.category === "Tai nghe").length,
-        "Loa/Mic": gears.filter((g) => g.category === "Loa/Mic").length,
-      };
+      const categories = [
+        "Chuột",
+        "Bàn phím",
+        "Tai nghe",
+        "Loa/Mic",
+        "Màn hình",
+        "Laptop",
+        "PC",
+      ];
+      const categoryCount = Object.fromEntries(
+        categories.map((category) => [
+          category,
+          gears.filter((g) => g.category === category).length,
+        ]),
+      );
 
       const topCat = Object.entries(categoryCount).sort(
         (a, b) => b[1] - a[1],
@@ -541,7 +553,15 @@
       new Chart(ctx, {
         type: "pie",
         data: {
-          labels: ["Chuột + Lót", "Bàn phím", "Tai nghe", "Loa + Mic"],
+          labels: [
+            "Chuột + Lót",
+            "Bàn phím",
+            "Tai nghe",
+            "Loa + Mic",
+            "Màn hình",
+            "Laptop",
+            "PC",
+          ],
           datasets: [
             {
               data: [
@@ -549,8 +569,19 @@
                 categoryCount["Bàn phím"],
                 categoryCount["Tai nghe"],
                 categoryCount["Loa/Mic"],
+                categoryCount["Màn hình"],
+                categoryCount["Laptop"],
+                categoryCount["PC"],
               ],
-              backgroundColor: ["#0d6efd", "#198754", "#dc3545", "#ffc107"],
+              backgroundColor: [
+                "#0d6efd",
+                "#198754",
+                "#dc3545",
+                "#ffc107",
+                "#0dcaf0",
+                "#6f42c1",
+                "#343a40",
+              ],
               borderWidth: 1,
             },
           ],
@@ -574,32 +605,6 @@
           alert("Cảm ơn phản hồi của bạn! Chúng tôi sẽ liên hệ sớm.");
           this.reset();
         });
-
-      function updateCartCount() {
-        const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        const cartCount = document.getElementById("cartCount");
-        if (cartCount) {
-          const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-          cartCount.textContent = totalItems;
-        }
-      }
-      updateCartCount();
-
-      document.getElementById("cartBtn")?.addEventListener("click", (e) => {
-        e.preventDefault();
-        const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        if (cart.length === 0) {
-          alert("Giỏ hàng trống!");
-        } else {
-          let msg = "Giỏ hàng:\n";
-          cart.forEach((item) => {
-            msg += `- ${item.title}: ${item.quantity} x ${item.price.toLocaleString("vi-VN")}đ\n`;
-          });
-          const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
-          msg += `\nTổng: ${total.toLocaleString("vi-VN")}đ`;
-          alert(msg);
-        }
-      });
     </script>
     <script src="assets/js/app.js"></script>
     <script src="assets/js/auth.js"></script>
