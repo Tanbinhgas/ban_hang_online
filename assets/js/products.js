@@ -341,7 +341,7 @@ if (gears.length === 0) {
       description:
         "Chuột gaming siêu nhẹ 54g, sensor Focus Pro 35K DPI, switch quang học Gen 3, pin lên đến 90 giờ.",
       image:
-        "https://cdn.cs.1worldsync.com/2e/53/2e53ff46-8e48-445c-b3b9-952c0e8e452f.jpg",
+        "assets/img/products/razer-viper-v3-pro.jpg",
       specs: {
         "Thương hiệu": "Razer",
         "Trọng lượng": "54g",
@@ -361,7 +361,7 @@ if (gears.length === 0) {
       description:
         "Bàn phím cơ adjustable switch, OLED screen, RGB lighting, PBT keycaps.",
       image:
-        "https://cdn.cs.1worldsync.com/0b/84/0b8472e6-d2fb-4ecb-96f7-137231008396.jpg",
+        "assets/img/products/steelseries-apex-pro-tkl.jpg",
       specs: {
         "Thương hiệu": "SteelSeries",
         Switch: "OmniPoint Adjustable",
@@ -381,7 +381,7 @@ if (gears.length === 0) {
       description:
         "Tai nghe không dây gaming, ANC, battery 36 giờ, Discord certified.",
       image:
-        "https://images.ctfassets.net/hmm5mo4qf4mf/5jLjb5ljMWTBZ6fxdM5jWt/2c374af74a65f763c8507699290df1b3/buy_image_4_24.png__1920x1080_crop-fit_optimize_subsampling-2-3649.png?fm=webp&q=90&fit=scale&w=1920",
+        "assets/img/products/steelseries-arctis-nova-pro.webp",
       specs: {
         "Thương hiệu": "SteelSeries",
         "Kết nối": "Wireless 2.4GHz",
@@ -401,7 +401,7 @@ if (gears.length === 0) {
       description:
         "Lót chuột RGB lớn 900x400mm, bề mặt microfiber, lighting RGB.",
       image:
-        "https://m.media-amazon.com/images/I/51sezMIH1iL._AC_UF894,1000_QL80_.jpg",
+        "assets/img/products/rgb-mouse-pad.jpg",
       specs: {
         "Kích thước": "900x400mm",
         "Bề mặt": "Microfiber",
@@ -418,7 +418,7 @@ if (gears.length === 0) {
       quantity: 12,
       description: "Chuột không dây 8KHz, trọng lượng 58g, sensor HERO 2.",
       image:
-        "https://content.abt.com/image.php/logitech-mouse-910-006636-top-view.jpg?image=/images/products/BDP_Images/logitech-mouse-910-006636-top-view.jpg&canvas=1&width=750&height=550",
+        "assets/img/products/logitech-g-pro-x-superlight-2.jpg",
       specs: {
         "Thương hiệu": "Logitech",
         "Trọng lượng": "58g",
@@ -437,7 +437,7 @@ if (gears.length === 0) {
       quantity: 5,
       description: "Loa RGB kèm micro không dây, kết nối USB, RGB lighting.",
       image:
-        "https://us.maxgaming.com/bilder/artiklar/zoom/31673_1.jpg?m=1723197868",
+        "assets/img/products/fifine-rgb-speakers-mic.jpg",
       specs: {
         "Kết nối": "USB",
         Microphone: "Có",
