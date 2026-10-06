@@ -1,22 +1,13 @@
-# Dùng image Python chính thức, bản slim cho nhẹ
-FROM python:3.12-slim
+# Dùng Nginx bản nhẹ để phục vụ file tĩnh (HTML/CSS/JS)
+FROM nginx:alpine
 
-# Thư mục làm việc bên trong container
-WORKDIR /app
+# Xóa trang mặc định của Nginx
+RUN rm -rf /usr/share/nginx/html/*
 
-# Copy requirements trước để tận dụng cache của Docker
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy toàn bộ source code website vào thư mục phục vụ của Nginx
+COPY . /usr/share/nginx/html/
 
-# Copy toàn bộ source code vào container
-COPY src/ ./src/
-COPY main.py .
+# Nginx mặc định lắng nghe cổng 80
+EXPOSE 80
 
-# Để Python tìm thấy package myapp nằm trong src/
-ENV PYTHONPATH=/app/src
-
-# Mở cổng 5000 cho Flask
-EXPOSE 5000
-
-# Lệnh chạy khi container khởi động
-CMD ["python", "main.py"]
+# Nginx tự chạy sẵn, không cần CMD thêm
